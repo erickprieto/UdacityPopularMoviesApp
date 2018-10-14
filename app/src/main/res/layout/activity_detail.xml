@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="5">
+
+
+    <TextView
+        android:id="@+id/detailActivity_titleTextView"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/default_gap"
+        android:layout_weight="4"
+        android:gravity="left"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="fill_parent"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:freezesText="true"
+        tools:text="@string/a" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/detailActivity_posterImageView"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/DetailActivity_posterDescriptionImageView"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/detailActivity_yearTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/a"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+                    <TextView
+                        android:id="@+id/detailActivity_durationTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/a"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
+
+
+                    <TextView
+                            android:id="@+id/detailActivity_voteAverageTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/a"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
+
+                    <RatingBar
+                            android:id="@+id/detailActivity_voteRatingBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_toRightOf="@id/detailActivity_voteAverageTextView"
+                            android:layout_toEndOf="@id/detailActivity_voteAverageTextView" />
+
+
+                    <Button
+                        android:id="@+id/detailActivity_favoriteButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/detailActivity_overviewTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_gap"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:padding="@dimen/default_gap"
+                android:text="@string/a"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</LinearLayout>

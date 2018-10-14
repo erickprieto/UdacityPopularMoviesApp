@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="SplashFragment_popularMoviesTextView">Popular Movies</string>
+    <string name="SplashFragment_loadingTextView">loading...</string>
+
+    <!-- Menu-->
+    <string name="MenuItem_sortByPopular">Popular</string>
+    <string name="MenuItem_sortByRated">Rated</string>
+
+    <!-- Detail Activity-->
+    <string name="DetailActivity_detailAlsoKnownAsLabel">Also known as:</string>
+    <string name="DetailActivity_detailPlaceOfOriginLabel">Place of origin:</string>
+    <string name="DetailActivity_detailDescriptionLabel">Description:</string>
+    <string name="DetailActivity_detailIngredientsLabel">Ingredients:</string>
+
+    <!-- Content descriptions-->
+    <string name="DetailActivity_posterDescriptionImageView">poster</string>
+
+    <!-- Error messages-->
+    <string name="DetailActivity_detailErrorMessage">Sandwich data not available</string>
+    <string name="poster_image">Poster Image</string>
+
+    <!-- Proxy RetroFit Mensajes -->
+    <string name="RetrofitError_notConnection">Unable to connect to Server.</string>
+    <string name="RetrofitError_notResponse">Unable to receive response.</string>
+    <string name="RetrofitError_notAutorized">Denied Permission to resourse.</string>
+    <string name="RetrofitError_notFound">Element not found</string>
+    <string name="RetrofitError_internalError">Internal Problem</string>
+
+
+    <string name="a">Test String</string>
+</resources>
