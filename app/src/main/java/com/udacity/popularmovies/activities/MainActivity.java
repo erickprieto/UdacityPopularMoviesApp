@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
         }
 
         if(this.movies.size() == 0) {
-            downloadMovieList(MovieServiceSortBy.POPULARITY_DESC);
+            //downloadDiscoverMovieList(MovieServiceSortBy.POPULARITY_DESC);
+            downloadPopularMovieList();
         } else {
             assignMoviesViews();
         }
@@ -105,20 +106,50 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
 
     /**
      * Download from webservice list of {@link Movie}.
-     * Enqueue Asyncron WebService to call.
+     * Enqueue Asyncromus WebService to call.
      * @param sortByOption {@link MovieServiceSortBy} enum to choose the way to sort list from
      *                                               webservice.
      */
-    private void downloadMovieList(MovieServiceSortBy sortByOption) {
+    @Deprecated
+    private void downloadDiscoverMovieList(MovieServiceSortBy sortByOption) {
         MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
 
-        Call<PageResult> call = api.getMovies(
+        Call<PageResult> call = api.getDiscoverMovies(
                 ProxyHelper.WEB_SERVICES_LICENSE
                 , MovieServiceLanguage.ENGLISH_US.getValue()
                 , sortByOption.getValue()
                 , false
                 , false
                 , MovieServiceReleaseYear.YEAR_2018.getValue()
+                , 1);
+        Log.v(TAG, call.request().url().toString());
+        call.enqueue(this);
+    }
+
+    /**
+     * Download from webservice list of Popular {@link Movie}.
+     * Enqueue Asyncromus WebService to call.
+     */
+    private void downloadPopularMovieList() {
+        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
+
+        Call<PageResult> call = api.getPopularMovies(
+                ProxyHelper.WEB_SERVICES_LICENSE
+                , MovieServiceLanguage.ENGLISH_US.getValue()
+                , 1);
+        Log.v(TAG, call.request().url().toString());
+        call.enqueue(this);
+    }
+    /**
+     * Download from webservice list of Poupular {@link Movie}.
+     * Enqueue Asyncromus WebService to call.
+     */
+    private void downloadTopRatedMovieList() {
+        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
+
+        Call<PageResult> call = api.getTopRatedMovies(
+                ProxyHelper.WEB_SERVICES_LICENSE
+                , MovieServiceLanguage.ENGLISH_US.getValue()
                 , 1);
         Log.v(TAG, call.request().url().toString());
         call.enqueue(this);
@@ -134,10 +165,10 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuitem_sortby_popular:
-                downloadMovieList(MovieServiceSortBy.POPULARITY_DESC);
+                downloadPopularMovieList();
                 return true;
             case R.id.menuitem_sortby_rated:
-                downloadMovieList(MovieServiceSortBy.VOTE_AVERAGE_DESC);
+                downloadTopRatedMovieList();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

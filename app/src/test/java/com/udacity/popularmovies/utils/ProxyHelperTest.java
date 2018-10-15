@@ -38,7 +38,7 @@ public class ProxyHelperTest {
 //
 //        api = ProxyHelper.getProxy(MovieServiceContract.class);
 //
-//         call = api.getMovies(
+//         call = api.getDiscoverMovies(
 //                ProxyHelper.WEB_SERVICES_LICENSE
 //                , MovieServiceLanguage.ENGLISH_US.getValue()
 //                , MovieServiceSortBy.POPULARITY_DESC.getValue()

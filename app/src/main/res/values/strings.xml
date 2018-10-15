@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Popular Movies</string>
-    <string name="SplashFragment_popularMoviesTextView">Popular Movies</string>
-    <string name="SplashFragment_loadingTextView">loading...</string>
+    <string name="SplashActivity_popularMoviesTextView">Popular Movies</string>
+    <string name="SplashActivity_loadingTextView">loading...</string>
+    <string name="SplashActivity_apiValidationErrorToast">License API not valid. Establish API key on conf.properties</string>
 
     <!-- Menu-->
     <string name="MenuItem_sortByPopular">Popular</string>
@@ -20,7 +21,7 @@
     <string name="DetailActivity_detailErrorMessage">Sandwich data not available</string>
     <string name="poster_image">Poster Image</string>
 
-    <!-- Proxy RetroFit Mensajes -->
+    <!-- Proxy RetroFit Message -->
     <string name="RetrofitError_notConnection">Unable to connect to Server.</string>
     <string name="RetrofitError_notResponse">Unable to receive response.</string>
     <string name="RetrofitError_notAutorized">Denied Permission to resourse.</string>
@@ -29,4 +30,5 @@
 
 
     <string name="a">Test String</string>
+
 </resources>
