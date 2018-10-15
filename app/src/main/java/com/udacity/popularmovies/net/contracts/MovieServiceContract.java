@@ -59,7 +59,7 @@ public interface MovieServiceContract {
 
     /**
      * <p>Get a list of the current popular movies on TMDb. This list updates daily.</p>
-     * Requests the endpoint: https://developers.themoviedb.org/3/movies/popular?api_key=API_KEY&language=en-US
+     * Requests the endpoint: https://developers.themoviedb.org/3/movie/popular?api_key=API_KEY&language=en-US
      * @param apiKey <code>String</code> Mandatory to receive data, this key is provided by tmdb.
      * @param movieServiceLanguage String <code>MovieServiceLenguage</code>
      *                             Specify a language to query translatable fields with.
@@ -78,7 +78,7 @@ public interface MovieServiceContract {
 
     /**
      * <p>Get the top rated movies on TMDb.</p>
-     * Requests the endpoint: https://developers.themoviedb.org/3/movies/top-rated?api_key=API_KEY&language=en-US
+     * Requests the endpoint: https://developers.themoviedb.org/3/movie/top_rated?api_key=API_KEY&language=en-US
      * @param apiKey <code>String</code> Mandatory to receive data, this key is provided by tmdb.
      * @param movieServiceLanguage String <code>MovieServiceLenguage</code>
      *                             Specify a language to query translatable fields with.
