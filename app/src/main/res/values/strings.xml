@@ -2,7 +2,7 @@
     <string name="app_name">Popular Movies</string>
     <string name="SplashActivity_popularMoviesTextView">Popular Movies</string>
     <string name="SplashActivity_loadingTextView">loading...</string>
-    <string name="SplashActivity_apiValidationErrorToast">License API not valid. Establish API key on conf.properties</string>
+    <string name="SplashActivity_apiValidationErrorToast">License API not valid. Establish API resourceKey on conf.properties</string>
 
     <!-- Menu-->
     <string name="MenuItem_sortByPopular">Popular</string>
