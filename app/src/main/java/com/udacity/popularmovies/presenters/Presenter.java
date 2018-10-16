@@ -5,4 +5,6 @@ package com.udacity.popularmovies.presenters;
  * @since 2018
  */
 public class Presenter {
+
+    Presenter() {}
 }

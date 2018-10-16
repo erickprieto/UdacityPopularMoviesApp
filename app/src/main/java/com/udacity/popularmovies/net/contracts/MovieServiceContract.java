@@ -1,6 +1,6 @@
 package com.udacity.popularmovies.net.contracts;
 
-import com.udacity.popularmovies.models.PageResult;
+import com.udacity.popularmovies.models.PageResultMovies;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -11,7 +11,7 @@ import retrofit2.http.Query;
  * Contract to download a list of Movies from The Movie DataBase API.
  * <a href="https://api.themoviedb.org/3">https://api.themoviedb.org/3/</a>
  * <p>
- * These Endpoints download a JSON object {@link PageResult} that contains
+ * These Endpoints download a JSON object {@link PageResultMovies} that contains
  * a List of {@link com.udacity.popularmovies.models.Movie}.
  * Example of:
  * {@link MovieServiceContract#getDiscoverMovies(String, String, String, boolean, boolean, int, int)}
@@ -44,11 +44,11 @@ public interface MovieServiceContract {
      *             <li>minimum: 1</li>
      *             <li>maximum: 1000</li>
      *             <li>default: 1</li>
-     * @return <code>PageResult</code> details of response with inside a List of
+     * @return <code>PageResultMovies</code> details of response with inside a List of
      * {@link com.udacity.popularmovies.models.Movie}
      */
     @GET("discover/movie")
-    Call<PageResult> getDiscoverMovies(@Query("api_key") String apiKey
+    Call<PageResultMovies> getDiscoverMovies(@Query("api_key") String apiKey
             , @Query("language") String movieServiceLanguage
             , @Query("sort_by") String movieServiceSortBy
             , @Query("include_adult") boolean adult
@@ -67,11 +67,11 @@ public interface MovieServiceContract {
      *             <li>minimum: 1</li>
      *             <li>maximum: 1000</li>
      *             <li>default: 1</li>
-     * @return <code>PageResult</code> details of response with inside a List of
+     * @return <code>PageResultMovies</code> details of response with inside a List of
      * {@link com.udacity.popularmovies.models.Movie}
      */
     @GET("movie/popular")
-    Call<PageResult> getPopularMovies(@Query("api_key") String apiKey
+    Call<PageResultMovies> getPopularMovies(@Query("api_key") String apiKey
             , @Query("language") String movieServiceLanguage
             , @Query("page") int page
     );
@@ -86,11 +86,11 @@ public interface MovieServiceContract {
      *             <li>minimum: 1</li>
      *             <li>maximum: 1000</li>
      *             <li>default: 1</li>
-     * @return <code>PageResult</code> details of response with inside a List of
+     * @return <code>PageResultMovies</code> details of response with inside a List of
      * {@link com.udacity.popularmovies.models.Movie}
      */
     @GET("movie/top_rated")
-    Call<PageResult> getTopRatedMovies(@Query("api_key") String apiKey
+    Call<PageResultMovies> getTopRatedMovies(@Query("api_key") String apiKey
             , @Query("language") String movieServiceLanguage
             , @Query("page") int page
     );

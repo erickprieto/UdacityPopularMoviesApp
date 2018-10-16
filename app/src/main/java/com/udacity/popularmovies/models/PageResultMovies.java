@@ -17,13 +17,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  *   ?api_key=API_KEY&language=en-US&sort_by=popularity.desc
  *   &include_adult=false&include_video=false&page=1
  * <p>
- * JSON object {@link PageResult} that contains
+ * JSON object {@link PageResultMovies} that contains
  * a List of {@link com.udacity.popularmovies.models.Movie}.
  * </p>
  * @author Erick Prieto
  * @since 2018
  */
-public class PageResult implements Parcelable
+public class PageResultMovies implements Parcelable
 {
 
     @SerializedName("page")
@@ -45,24 +45,24 @@ public class PageResult implements Parcelable
     @Expose
     private List<Movie> movies = null;
 
-    public final static Parcelable.Creator<PageResult> CREATOR = new Creator<PageResult>() {
+    public final static Parcelable.Creator<PageResultMovies> CREATOR = new Creator<PageResultMovies>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public PageResult createFromParcel(Parcel in) {
-            return new PageResult(in);
+        public PageResultMovies createFromParcel(Parcel in) {
+            return new PageResultMovies(in);
         }
 
-        public PageResult[] newArray(int size) {
-            return (new PageResult[size]);
+        public PageResultMovies[] newArray(int size) {
+            return (new PageResultMovies[size]);
         }
 
     }
             ;
 
-    protected PageResult(Parcel in) {
+    protected PageResultMovies(Parcel in) {
         this.page = (Integer) in.readValue((Integer.class.getClassLoader()));
         this.totalResults = (Integer) in.readValue((Integer.class.getClassLoader()));
         this.totalPages = (Integer) in.readValue((Integer.class.getClassLoader()));
@@ -72,7 +72,7 @@ public class PageResult implements Parcelable
     /**
      * Default constructor.
      */
-    public PageResult() {
+    public PageResultMovies() {
     }
 
     public Integer getPage() {
@@ -140,10 +140,10 @@ public class PageResult implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof PageResult) == false) {
+        if ((other instanceof PageResultMovies) == false) {
             return false;
         }
-        PageResult rhs = ((PageResult) other);
+        PageResultMovies rhs = ((PageResultMovies) other);
         return new EqualsBuilder()
                 .append(totalResults, rhs.totalResults)
                 .append(page, rhs.page)

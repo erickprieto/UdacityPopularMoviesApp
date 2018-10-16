@@ -17,8 +17,9 @@ import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.models.MovieServiceLanguage;
 import com.udacity.popularmovies.models.MovieServiceReleaseYear;
 import com.udacity.popularmovies.models.MovieServiceSortBy;
-import com.udacity.popularmovies.models.PageResult;
+import com.udacity.popularmovies.models.PageResultMovies;
 import com.udacity.popularmovies.net.contracts.MovieServiceContract;
+import com.udacity.popularmovies.presenters.MainPresenter;
 import com.udacity.popularmovies.utils.ProxyHelper;
 
 import java.util.ArrayList;
@@ -32,10 +33,11 @@ import retrofit2.Response;
  * Show Posters of main Popular Movies from <code>https://api.themoviedb.org/3/</code>.
  * Activity gives an option to sort by popularity and votes.
  * click on a movies launch a {@link DetailActivity} with details of the movie.
+ *
  * @author Erick Prieto
  * @since 2018
  */
-public class MainActivity extends AppCompatActivity implements Callback<PageResult> {
+public class MainActivity extends AppCompatActivity {
 
     /**
      * Name of reference to log all records of events in this class.
@@ -43,19 +45,11 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
-     * Identifier to serialize {@link MainActivity#movies}
+     * Identifier to serialize {@link MainPresenter#movies}
      */
     public static final String ID_SERIAL_MOVIES_LIST = "moviesList";
 
-    /**
-     * List of {@link Movie} from WebService or <code>Bundle</code>.
-     */
-    private List<Movie> movies = new ArrayList<Movie>();
-
-    /**
-     * Adapter to fill {@link RecyclerView} with {@link Movie}.
-     */
-    private MoviesAdapter adapter;
+    private MainPresenter presenter;
 
     //To assign Views
     private RecyclerView getMoviesRecyclerView() {
@@ -66,13 +60,16 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.presenter = new MainPresenter();
+
         if (savedInstanceState != null) {
-            this.movies = savedInstanceState.getParcelableArrayList(ID_SERIAL_MOVIES_LIST);
+            this.presenter.setMovies(
+                    new ArrayList(savedInstanceState.getParcelableArrayList(ID_SERIAL_MOVIES_LIST))
+            );
         }
 
-        if(this.movies.size() == 0) {
-            //downloadDiscoverMovieList(MovieServiceSortBy.POPULARITY_DESC);
-            downloadPopularMovieList();
+        if(this.presenter.getMovies().size() == 0) {
+            this.presenter.downloadPopularMovieList();
         } else {
             assignMoviesViews();
         }
@@ -104,56 +101,6 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
         return grid;
     }
 
-    /**
-     * Download from webservice list of {@link Movie}.
-     * Enqueue Asyncromus WebService to call.
-     * @param sortByOption {@link MovieServiceSortBy} enum to choose the way to sort list from
-     *                                               webservice.
-     */
-    @Deprecated
-    private void downloadDiscoverMovieList(MovieServiceSortBy sortByOption) {
-        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
-
-        Call<PageResult> call = api.getDiscoverMovies(
-                ProxyHelper.WEB_SERVICES_LICENSE
-                , MovieServiceLanguage.ENGLISH_US.getValue()
-                , sortByOption.getValue()
-                , false
-                , false
-                , MovieServiceReleaseYear.YEAR_2018.getValue()
-                , 1);
-        Log.v(TAG, call.request().url().toString());
-        call.enqueue(this);
-    }
-
-    /**
-     * Download from webservice list of Popular {@link Movie}.
-     * Enqueue Asyncromus WebService to call.
-     */
-    private void downloadPopularMovieList() {
-        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
-
-        Call<PageResult> call = api.getPopularMovies(
-                ProxyHelper.WEB_SERVICES_LICENSE
-                , MovieServiceLanguage.ENGLISH_US.getValue()
-                , 1);
-        Log.v(TAG, call.request().url().toString());
-        call.enqueue(this);
-    }
-    /**
-     * Download from webservice list of Poupular {@link Movie}.
-     * Enqueue Asyncromus WebService to call.
-     */
-    private void downloadTopRatedMovieList() {
-        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
-
-        Call<PageResult> call = api.getTopRatedMovies(
-                ProxyHelper.WEB_SERVICES_LICENSE
-                , MovieServiceLanguage.ENGLISH_US.getValue()
-                , 1);
-        Log.v(TAG, call.request().url().toString());
-        call.enqueue(this);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,10 +112,10 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuitem_sortby_popular:
-                downloadPopularMovieList();
+                this.presenter.downloadPopularMovieList();
                 return true;
             case R.id.menuitem_sortby_rated:
-                downloadTopRatedMovieList();
+                this.presenter.downloadTopRatedMovieList();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -183,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (this.movies != null) {
-            outState.putParcelableArrayList(ID_SERIAL_MOVIES_LIST, new ArrayList<Movie>(this.movies));
+        if (this.presenter.getMovies() != null) {
+            outState.putParcelableArrayList(ID_SERIAL_MOVIES_LIST, new ArrayList<Movie>(this.presenter.getMovies()));
         }
     }
 
@@ -198,37 +145,19 @@ public class MainActivity extends AppCompatActivity implements Callback<PageResu
      */
     private void assignMoviesViews() {
 
-        this.adapter = new MoviesAdapter(this.movies);
-        getMoviesRecyclerView().setAdapter(this.adapter);
+        this.presenter.setAdapter(new MoviesAdapter(this.presenter.getMovies()));
+        getMoviesRecyclerView().setAdapter(this.presenter.getAdapter());
     }
 
     /**
      * Launch {@link DetailActivity} with extra data contained {@link Movie} details.
-     * @param deatils <code>Movie</code> to send data into <code>Intent</code>
+     * @param details <code>Movie</code> to send data into <code>Intent</code>
      */
-    public void startDetailActivity(Movie deatils) {
+    public void startDetailActivity(Movie details) {
+        Log.v(TAG, "Movie sent: " + details.toString());
         Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra(DetailActivity.ID_EXTRA_MOVIE_DETAIL, deatils);
+        intent.putExtra(DetailActivity.ID_EXTRA_MOVIE_DETAIL, details);
         this.startActivity(intent);
-    }
-
-    @Override
-    public void onResponse(Call<PageResult> call, Response<PageResult> response) {
-        if(response.isSuccessful()) {
-            PageResult moviesList = response.body();
-            this.movies = moviesList.getMovies();
-
-            this.adapter.putMovies(this.movies);
-
-            Log.v(TAG, moviesList.toString());
-        } else {
-            Log.e(TAG, response.errorBody().toString());
-        }
-    }
-
-    @Override
-    public void onFailure(Call<PageResult> call, Throwable t) {
-        Log.e(TAG,call.toString() + t.getMessage());
     }
 
 }

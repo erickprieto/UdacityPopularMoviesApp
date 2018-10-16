@@ -13,6 +13,11 @@ import android.content.Intent;
 import com.squareup.picasso.Picasso;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.R;
+import com.udacity.popularmovies.models.MovieServiceLanguage;
+import com.udacity.popularmovies.models.PageResultReviews;
+import com.udacity.popularmovies.models.PageResultVideos;
+import com.udacity.popularmovies.models.Video;
+import com.udacity.popularmovies.net.contracts.VideoServiceContract;
 import com.udacity.popularmovies.utils.ProxyHelper;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +26,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -31,7 +40,7 @@ import java.util.Date;
  * @author Erick Prieto
  * @since 2018
  */
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements Callback<PageResultVideos> {
 
 
     /**
@@ -90,6 +99,22 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     /**
+     * Download from webservice list of Video {@link Video}.
+     * Enqueue Asyncromus WebService to call.
+     */
+    private void downloadVideoList() {
+        VideoServiceContract api = ProxyHelper.getProxy(VideoServiceContract.class);
+
+        Call<PageResultVideos> call = api.getVideos(
+                ProxyHelper.WEB_SERVICES_LICENSE
+                , 1
+                , MovieServiceLanguage.ENGLISH_US.getValue()
+                );
+        Log.v(TAG, call.request().url().toString());
+        call.enqueue(this);
+    }
+
+    /**
      * To fill {@link View} controls with data from {@link DetailActivity#movieDetails}.
      */
     private void toFillUI() {
@@ -143,4 +168,16 @@ public class DetailActivity extends AppCompatActivity {
         }
 
     }
+
+
+    @Override
+    public void onResponse(Call<PageResultVideos> call, Response<PageResultVideos> response) {
+
+    }
+
+    @Override
+    public void onFailure(Call<PageResultVideos> call, Throwable t) {
+
+    }
+
 }
