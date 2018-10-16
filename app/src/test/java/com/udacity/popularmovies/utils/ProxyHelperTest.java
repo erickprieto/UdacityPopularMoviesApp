@@ -1,15 +1,7 @@
 package com.udacity.popularmovies.utils;
 
-import android.util.Log;
-
-import com.udacity.popularmovies.models.MovieServiceLanguage;
-import com.udacity.popularmovies.models.MovieServiceReleaseYear;
-import com.udacity.popularmovies.models.MovieServiceSortBy;
-import com.udacity.popularmovies.models.PageResult;
+import com.udacity.popularmovies.models.PageResultMovies;
 import com.udacity.popularmovies.net.contracts.MovieServiceContract;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import retrofit2.Call;
 
@@ -27,7 +19,7 @@ public class ProxyHelperTest {
     private String expected;
     private String endpoint;
     private MovieServiceContract api;
-    private Call<PageResult> call;
+    private Call<PageResultMovies> call;
 
 //    @Before
 //    public void setUp() throws Exception {
