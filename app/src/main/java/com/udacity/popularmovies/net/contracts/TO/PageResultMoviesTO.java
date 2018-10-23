@@ -1,4 +1,4 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net.contracts.TO;
 
 import java.util.List;
 import android.os.Parcel;
@@ -6,6 +6,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.udacity.popularmovies.models.Movie;
+import com.udacity.popularmovies.models.MovieServiceSortBy;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -17,13 +20,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  *   ?api_key=API_KEY&language=en-US&sort_by=popularity.desc
  *   &include_adult=false&include_video=false&page=1
  * <p>
- * JSON object {@link PageResultMovies} that contains
+ * JSON object {@link PageResultMoviesTO} that contains
  * a List of {@link com.udacity.popularmovies.models.Movie}.
  * </p>
  * @author Erick Prieto
  * @since 2018
  */
-public class PageResultMovies implements Parcelable
+public class PageResultMoviesTO implements Parcelable
 {
 
     @SerializedName("page")
@@ -39,30 +42,30 @@ public class PageResultMovies implements Parcelable
     private Integer totalPages;
 
     /**
-     * List of Movies sorted by {@link MovieServiceSortBy}, sent on the request.
+     * List of MoviesTO sorted by {@link MovieServiceSortBy}, sent on the request.
      */
     @SerializedName("results")
     @Expose
-    private List<Movie> movies = null;
+    private List<MovieTO> movies = null;
 
-    public final static Parcelable.Creator<PageResultMovies> CREATOR = new Creator<PageResultMovies>() {
+    public final static Parcelable.Creator<PageResultMoviesTO> CREATOR = new Creator<PageResultMoviesTO>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public PageResultMovies createFromParcel(Parcel in) {
-            return new PageResultMovies(in);
+        public PageResultMoviesTO createFromParcel(Parcel in) {
+            return new PageResultMoviesTO(in);
         }
 
-        public PageResultMovies[] newArray(int size) {
-            return (new PageResultMovies[size]);
+        public PageResultMoviesTO[] newArray(int size) {
+            return (new PageResultMoviesTO[size]);
         }
 
     }
             ;
 
-    protected PageResultMovies(Parcel in) {
+    protected PageResultMoviesTO(Parcel in) {
         this.page = (Integer) in.readValue((Integer.class.getClassLoader()));
         this.totalResults = (Integer) in.readValue((Integer.class.getClassLoader()));
         this.totalPages = (Integer) in.readValue((Integer.class.getClassLoader()));
@@ -72,7 +75,7 @@ public class PageResultMovies implements Parcelable
     /**
      * Default constructor.
      */
-    public PageResultMovies() {
+    public PageResultMoviesTO() {
     }
 
     public Integer getPage() {
@@ -103,7 +106,7 @@ public class PageResultMovies implements Parcelable
      * Obtain a List of Movies sorted by {@link MovieServiceSortBy}, sent on the request.
      * @return
      */
-    public List<Movie> getMovies() {
+    public List<MovieTO> getMovies() {
         return movies;
     }
 
@@ -111,7 +114,7 @@ public class PageResultMovies implements Parcelable
      * Establish a List of Movies sorted by {@link MovieServiceSortBy}, sent on the request.
      * @param movies
      */
-    public void setMovies(List<Movie> movies) {
+    public void setMovies(List<MovieTO> movies) {
         this.movies = movies;
     }
 
@@ -140,10 +143,10 @@ public class PageResultMovies implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof PageResultMovies) == false) {
+        if ((other instanceof PageResultMoviesTO) == false) {
             return false;
         }
-        PageResultMovies rhs = ((PageResultMovies) other);
+        PageResultMoviesTO rhs = ((PageResultMoviesTO) other);
         return new EqualsBuilder()
                 .append(totalResults, rhs.totalResults)
                 .append(page, rhs.page)

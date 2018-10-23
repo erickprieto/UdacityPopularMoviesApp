@@ -16,10 +16,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * <p>
  * Utility Class to download Webservice REST resources. This class provides KEY values to
- * read from configuration file, that file contains parameters to access to The Movie DataBase API.
+ * read from configuration file, that file contains parameters to access to The MovieTO DataBase API.
  * </p>
  * <p>
- * example of The Movie DataBase endpoint.
+ * example of The MovieTO DataBase endpoint.
  * https://api.themoviedb.org/3/discover/movie?api_key=dcbbd07d3034bb7d1b81ac56ded12b65
  * &language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1
  * </p>
@@ -79,7 +79,7 @@ public class ProxyHelper {
             PopularMoviesApplication.getAtributoConfiguracion(KEY_POSTER_URL_BASE);
 
     /**
-     * License Key to get information from webservice The Movie DataBase API.
+     * License Key to get information from webservice The MovieTO DataBase API.
      */
     public static final String WEB_SERVICES_LICENSE =
             PopularMoviesApplication.getAtributoConfiguracion(KEY_WEB_SERVICES);

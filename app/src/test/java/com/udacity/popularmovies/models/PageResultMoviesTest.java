@@ -1,5 +1,7 @@
 package com.udacity.popularmovies.models;
 
+import com.udacity.popularmovies.net.contracts.TO.PageResultMoviesTO;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,8 +12,8 @@ import static org.junit.Assert.assertTrue;
 
 public class PageResultMoviesTest {
 
-    private PageResultMovies given;
-    private PageResultMovies expected;
+    private PageResultMoviesTO given;
+    private PageResultMoviesTO expected;
     private Movie movie;
 
     @Before
@@ -28,14 +30,14 @@ public class PageResultMoviesTest {
         movie.setVideo(false);
         movie.setVoteAverage(100.0);
 
-        given = new PageResultMovies();
+        given = new PageResultMoviesTO();
         given.setPage(1);
         given.setTotalPages(10);
         given.setTotalResults(100);
         given.setMovies(new ArrayList<Movie>());
         given.getMovies().add(movie);
 
-        expected = new PageResultMovies();
+        expected = new PageResultMoviesTO();
         expected.setPage(1);
         expected.setTotalPages(10);
         expected.setTotalResults(100);

@@ -1,5 +1,7 @@
 package com.udacity.popularmovies.models;
 
+import com.udacity.popularmovies.net.contracts.TO.ReviewTO;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,14 +10,14 @@ import static org.junit.Assert.assertTrue;
 
 public class ReviewTest {
 
-    private Review given;
-    private Review expected;
+    private ReviewTO given;
+    private ReviewTO expected;
 
     @Before
     public void setUp() throws Exception {
 
-        expected = new Review();
-        given = new Review();
+        expected = new ReviewTO();
+        given = new ReviewTO();
     }
 
     @Test

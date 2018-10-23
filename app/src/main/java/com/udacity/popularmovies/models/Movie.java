@@ -24,83 +24,37 @@ public class Movie implements Parcelable{
      */
     public static final String DATE_FORMAT = "yyyy-mm-dd";
 
-    @SerializedName("vote_count")
-    @Expose
-    private Integer voteCount;
-
     /**
      * Identifier of this movie.
      */
-    @SerializedName("id")
-    @Expose
     private Integer id;
 
-    @SerializedName("video")
-    @Expose
-    private Boolean video;
-
     /**
-     * Establish a points of qualification between 0 and 10 for this movie.
+     * Name of MovieTO.
      */
-    @SerializedName("vote_average")
-    @Expose
-    private Double voteAverage;
-
-    /**
-     * Name of Movie.
-     */
-    @SerializedName("title")
-    @Expose
     private String title;
 
     /**
-     * Establish a points of popularity of this movie.
+     * ReviewTO of the movie.
      */
-    @SerializedName("popularity")
-    @Expose
-    private Double popularity;
-
-    /**
-     * Contains only filename of image of movie (Poster).
-     * This name needs a base url to download from API.
-     */
-    @SerializedName("poster_path")
-    @Expose
-    private String posterPath;
-
-    @SerializedName("original_language")
-    @Expose
-    private String originalLanguage;
-
-    @SerializedName("original_title")
-    @Expose
-    private String originalTitle;
-
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds = null;
-
-    @SerializedName("backdrop_path")
-    @Expose
-    private String backdropPath;
-
-    @SerializedName("adult")
-    @Expose
-    private Boolean adult;
-
-    /**
-     * Review of the movie.
-     */
-    @SerializedName("overview")
-    @Expose
     private String overview;
 
     /**
      * Retrieve Date in {@link Movie#DATE_FORMAT} format.
      */
-    @SerializedName("release_date")
-    @Expose
     private String releaseDate;
+
+    /**
+     * Contains only filename of image of movie (Poster).
+     * This name needs a base url to download from API.
+     */
+    private String posterPath;
+
+    /**
+     * Establish a points of qualification between 0 and 10 for this movie.
+     */
+    private Double voteAverage;
+
 
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
@@ -117,18 +71,10 @@ public class Movie implements Parcelable{
     };
 
     protected Movie(Parcel in) {
-        this.voteCount = in.readInt();
         this.id = in.readInt();
-        this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.voteAverage = in.readDouble();
         this.title = in.readString();
-        this.popularity = in.readDouble();
         this.posterPath = in.readString();
-        this.originalLanguage = in.readString();
-        this.originalTitle = in.readString();
-        this.genreIds = in.readArrayList(Integer.class.getClassLoader());
-        this.backdropPath = in.readString();
-        this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.overview = in.readString();
         this.releaseDate = in.readString();
     }
@@ -136,15 +82,15 @@ public class Movie implements Parcelable{
     /**
      * Default constructor.
      */
-    public Movie() {
-        }
+    public Movie() { }
 
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
+    public Movie(Integer id, String title, String overview, String releaseDate, String posterPath, Double voteAverage) {
+        this.id = id;
+        this.title = title;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.posterPath = posterPath;
+        this.voteAverage = voteAverage;
     }
 
     public Integer getId() {
@@ -153,14 +99,6 @@ public class Movie implements Parcelable{
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Boolean getVideo() {
-        return video;
-    }
-
-    public void setVideo(Boolean video) {
-        this.video = video;
     }
 
     public Double getVoteAverage() {
@@ -179,13 +117,6 @@ public class Movie implements Parcelable{
         this.title = title;
     }
 
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Double popularity) {
-        this.popularity = popularity;
-    }
 
     /**
      * Obtains only filename of image of movie (Poster).
@@ -201,46 +132,6 @@ public class Movie implements Parcelable{
      */
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
-    }
-
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
-    public void setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-    }
-
-    public String getOriginalTitle() {
-        return originalTitle;
-    }
-
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
-
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
-
-    public String getBackdropPath() {
-        return backdropPath;
-    }
-
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-    }
-
-    public Boolean getAdult() {
-        return adult;
-    }
-
-    public void setAdult(Boolean adult) {
-        this.adult = adult;
     }
 
     public String getOverview() {
@@ -266,18 +157,10 @@ public class Movie implements Parcelable{
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(voteCount);
         dest.writeInt(id);
-        dest.writeValue(video);
         dest.writeDouble(voteAverage);
         dest.writeString(title);
-        dest.writeDouble(popularity);
         dest.writeString(posterPath);
-        dest.writeString(originalLanguage);
-        dest.writeString(originalTitle);
-        dest.writeList(genreIds);
-        dest.writeString(backdropPath);
-        dest.writeValue(adult);
         dest.writeString(overview);
         dest.writeString(releaseDate);
     }
@@ -289,40 +172,24 @@ public class Movie implements Parcelable{
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("voteCount", voteCount)
                 .append("id", id)
-                .append("video", video)
-                .append("voteAverage", voteAverage)
                 .append("title", title)
-                .append("popularity", popularity)
-                .append("posterPath", posterPath)
-                .append("originalLanguage", originalLanguage)
-                .append("originalTitle", originalTitle)
-                .append("genreIds", genreIds)
-                .append("backdropPath", backdropPath)
-                .append("adult", adult)
-                .append("overview", overview)
                 .append("releaseDate", releaseDate)
+                .append("voteAverage", voteAverage)
+                .append("posterPath", posterPath)
+                .append("overview", overview)
                 .toString();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(genreIds)
-                .append(originalLanguage)
-                .append(adult)
-                .append(backdropPath)
-                .append(voteCount)
                 .append(id)
                 .append(title)
                 .append(releaseDate)
                 .append(overview)
                 .append(posterPath)
-                .append(originalTitle)
                 .append(voteAverage)
-                .append(video)
-                .append(popularity)
                 .toHashCode();
     }
 
@@ -336,20 +203,12 @@ public class Movie implements Parcelable{
         }
         Movie rhs = ((Movie) other);
         return new EqualsBuilder()
-                .append(genreIds, rhs.genreIds)
-                .append(originalLanguage, rhs.originalLanguage)
-                .append(adult, rhs.adult)
-                .append(backdropPath, rhs.backdropPath)
-                .append(voteCount, rhs.voteCount)
                 .append(id, rhs.id)
                 .append(title, rhs.title)
                 .append(releaseDate, rhs.releaseDate)
                 .append(overview, rhs.overview)
                 .append(posterPath, rhs.posterPath)
-                .append(originalTitle, rhs.originalTitle)
                 .append(voteAverage, rhs.voteAverage)
-                .append(video, rhs.video)
-                .append(popularity, rhs.popularity)
                 .isEquals();
     }
 

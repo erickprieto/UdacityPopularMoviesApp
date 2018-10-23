@@ -1,4 +1,4 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net.contracts.TO;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Review implements Parcelable
+public class ReviewTO implements Parcelable
 {
 
     @SerializedName("author")
@@ -28,29 +28,29 @@ public class Review implements Parcelable
     @Expose
     private String url;
 
-    public final static Parcelable.Creator<Review> CREATOR = new Creator<Review>() {
+    public final static Parcelable.Creator<ReviewTO> CREATOR = new Creator<ReviewTO>() {
 
 
         @SuppressWarnings({"unchecked"})
-        public Review createFromParcel(Parcel in) {
-            return new Review(in);
+        public ReviewTO createFromParcel(Parcel in) {
+            return new ReviewTO(in);
         }
 
-        public Review[] newArray(int size) {
-            return (new Review[size]);
+        public ReviewTO[] newArray(int size) {
+            return (new ReviewTO[size]);
         }
 
     }
             ;
 
-    protected Review(Parcel in) {
+    protected ReviewTO(Parcel in) {
         this.authorUserName = ((String) in.readValue((String.class.getClassLoader())));
         this.contentReview = ((String) in.readValue((String.class.getClassLoader())));
         this.id = ((String) in.readValue((String.class.getClassLoader())));
         this.url = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    public Review() {
+    public ReviewTO() {
     }
 
     public String getAuthorUserName() {
@@ -110,10 +110,10 @@ public class Review implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Review) == false) {
+        if ((other instanceof ReviewTO) == false) {
             return false;
         }
-        Review rhs = ((Review) other);
+        ReviewTO rhs = ((ReviewTO) other);
         return new EqualsBuilder().append(id, rhs.id)
                 .append(contentReview, rhs.contentReview)
                 .append(authorUserName, rhs.authorUserName)

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.udacity.popularmovies.R;
+import com.udacity.popularmovies.services.PopularMoviesDatabaseService;
 import com.udacity.popularmovies.utils.ProxyHelper;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
     }
 
     @Override

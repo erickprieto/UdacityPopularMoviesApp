@@ -1,18 +1,17 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net.contracts.TO;
 
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.udacity.popularmovies.models.Video;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class PageResultVideos implements Parcelable
+public class PageResultVideosTO implements Parcelable
 {
 
     @SerializedName("id")
@@ -21,29 +20,29 @@ public class PageResultVideos implements Parcelable
 
     @SerializedName("results")
     @Expose
-    private List<Video> videos = null;
+    private List<VideoTO> videos = null;
 
-    public final static Parcelable.Creator<PageResultVideos> CREATOR = new Creator<PageResultVideos>() {
+    public final static Parcelable.Creator<PageResultVideosTO> CREATOR = new Creator<PageResultVideosTO>() {
 
 
         @SuppressWarnings({"unchecked"})
-        public PageResultVideos createFromParcel(Parcel in) {
-            return new PageResultVideos(in);
+        public PageResultVideosTO createFromParcel(Parcel in) {
+            return new PageResultVideosTO(in);
         }
 
-        public PageResultVideos[] newArray(int size) {
-            return (new PageResultVideos[size]);
+        public PageResultVideosTO[] newArray(int size) {
+            return (new PageResultVideosTO[size]);
         }
 
     }
             ;
 
-    protected PageResultVideos(Parcel in) {
+    protected PageResultVideosTO(Parcel in) {
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.videos, (com.udacity.popularmovies.models.Video.class.getClassLoader()));
+        in.readList(this.videos, (VideoTO.class.getClassLoader()));
     }
 
-    public PageResultVideos() {
+    public PageResultVideosTO() {
     }
 
     public Integer getId() {
@@ -54,11 +53,11 @@ public class PageResultVideos implements Parcelable
         this.id = id;
     }
 
-    public List<Video> getVideos() {
+    public List<VideoTO> getVideos() {
         return videos;
     }
 
-    public void setVideos(List<Video> videos) {
+    public void setVideos(List<VideoTO> videos) {
         this.videos = videos;
     }
 
@@ -83,10 +82,10 @@ public class PageResultVideos implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof PageResultVideos) == false) {
+        if ((other instanceof PageResultVideosTO) == false) {
             return false;
         }
-        PageResultVideos rhs = ((PageResultVideos) other);
+        PageResultVideosTO rhs = ((PageResultVideosTO) other);
         return new EqualsBuilder()
                 .append(id, rhs.id)
                 .append(videos, rhs.videos)

@@ -1,13 +1,15 @@
 package com.udacity.popularmovies.models;
 
+import com.udacity.popularmovies.net.contracts.TO.VideoTO;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class VideoTest {
-    private Video given;
-    private Video expected;
+    private VideoTO given;
+    private VideoTO expected;
 
     @Test
     public void equalsValidator_ShouldReturnTrue() {

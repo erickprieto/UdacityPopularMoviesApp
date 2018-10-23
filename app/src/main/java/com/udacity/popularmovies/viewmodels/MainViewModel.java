@@ -1,15 +1,18 @@
-package com.udacity.popularmovies.presenters;
+package com.udacity.popularmovies.viewmodels;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.udacity.popularmovies.activities.MainActivity;
 import com.udacity.popularmovies.adapters.MoviesAdapter;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.models.MovieServiceLanguage;
 import com.udacity.popularmovies.models.MovieServiceReleaseYear;
 import com.udacity.popularmovies.models.MovieServiceSortBy;
-import com.udacity.popularmovies.models.PageResultMovies;
+import com.udacity.popularmovies.net.contracts.TO.MovieTO;
+import com.udacity.popularmovies.net.contracts.TO.PageResultMoviesTO;
 import com.udacity.popularmovies.net.contracts.MovieServiceContract;
 import com.udacity.popularmovies.utils.ProxyHelper;
 
@@ -24,24 +27,34 @@ import retrofit2.Response;
  * @author Erick Prieto
  * @since 2018
  */
-public class MainPresenter extends Presenter implements Callback<PageResultMovies> {
+public class MainViewModel extends ViewModel implements Callback<PageResultMoviesTO> {
 
     /**
      * Name of reference to log all records of events in this class.
      */
-    private static final String TAG = MainPresenter.class.getSimpleName();
+    private static final String TAG = MainViewModel.class.getSimpleName();
 
     /**
      * List of {@link Movie} from WebService or <code>Bundle</code>.
      */
     private List<Movie> movies = new ArrayList<Movie>();
 
+    private MutableLiveData<List<Movie>> moviesMutable;
+    public LiveData<List<Movie>> getMoviesMutable() {
+        if (moviesMutable == null) {
+            moviesMutable = new MutableLiveData<List<Movie>>();
+            downloadDiscoverMovieList(MovieServiceSortBy.POPULARITY_DESC);
+            moviesMutable.setValue(movies);
+        }
+        return moviesMutable;
+    }
+
     /**
      * Adapter to fill {@link RecyclerView} with {@link Movie}.
      */
     private MoviesAdapter adapter;
 
-    public MainPresenter() {
+    public MainViewModel() {
         super();
     }
 
@@ -63,7 +76,7 @@ public class MainPresenter extends Presenter implements Callback<PageResultMovie
 
     /**
      * Download from webservice list of {@link Movie}.
-     * Enqueue Asyncromus WebService to call.
+     * Enqueue Asynchronous WebService to call.
      * @param sortByOption {@link MovieServiceSortBy} enum to choose the way to sort list from
      *                                               webservice.
      */
@@ -71,7 +84,7 @@ public class MainPresenter extends Presenter implements Callback<PageResultMovie
     public void downloadDiscoverMovieList(MovieServiceSortBy sortByOption) {
         MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
 
-        Call<PageResultMovies> call = api.getDiscoverMovies(
+        Call<PageResultMoviesTO> call = api.getDiscoverMovies(
                 ProxyHelper.WEB_SERVICES_LICENSE
                 , MovieServiceLanguage.ENGLISH_US.getValue()
                 , sortByOption.getValue()
@@ -85,12 +98,12 @@ public class MainPresenter extends Presenter implements Callback<PageResultMovie
 
     /**
      * Download from webservice list of Popular {@link Movie}.
-     * Enqueue Asyncromus WebService to call.
+     * Enqueue Asynchronous WebService to call.
      */
     public void downloadPopularMovieList() {
         MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
 
-        Call<PageResultMovies> call = api.getPopularMovies(
+        Call<PageResultMoviesTO> call = api.getPopularMovies(
                 ProxyHelper.WEB_SERVICES_LICENSE
                 , MovieServiceLanguage.ENGLISH_US.getValue()
                 , 1);
@@ -100,12 +113,12 @@ public class MainPresenter extends Presenter implements Callback<PageResultMovie
 
     /**
      * Download from webservice list of Poupular {@link Movie}.
-     * Enqueue Asyncromus WebService to call.
+     * Enqueue Asynchronous WebService to call.
      */
     public void downloadTopRatedMovieList() {
         MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
 
-        Call<PageResultMovies> call = api.getTopRatedMovies(
+        Call<PageResultMoviesTO> call = api.getTopRatedMovies(
                 ProxyHelper.WEB_SERVICES_LICENSE
                 , MovieServiceLanguage.ENGLISH_US.getValue()
                 , 1);
@@ -114,21 +127,29 @@ public class MainPresenter extends Presenter implements Callback<PageResultMovie
     }
 
     @Override
-    public void onResponse(Call<PageResultMovies> call, Response<PageResultMovies> response) {
+    protected void onCleared() {
+        super.onCleared();
+        Log.v(TAG, "onCleared");
+    }
+
+    @Override
+    public void onResponse(Call<PageResultMoviesTO> call, Response<PageResultMoviesTO> response) {
         if(response.isSuccessful()) {
-            PageResultMovies moviesList = response.body();
-            this.movies = moviesList.getMovies();
+            PageResultMoviesTO pageWithMoviesList = response.body();
+            Log.v(TAG, pageWithMoviesList.toString());
+
+            this.movies = MovieTO.toListModel(pageWithMoviesList.getMovies());
 
             this.adapter.putMovies(this.movies);
+            Log.v(TAG, this.movies.toString());
 
-            Log.v(TAG, moviesList.toString());
         } else {
             Log.e(TAG, response.errorBody().toString());
         }
     }
 
     @Override
-    public void onFailure(Call<PageResultMovies> call, Throwable t) {
+    public void onFailure(Call<PageResultMoviesTO> call, Throwable t) {
         Log.e(TAG,call.toString() + t.getMessage());
     }
 }

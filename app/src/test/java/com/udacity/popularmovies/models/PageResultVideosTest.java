@@ -1,27 +1,28 @@
 package com.udacity.popularmovies.models;
 
+import com.udacity.popularmovies.net.contracts.TO.PageResultVideosTO;
+import com.udacity.popularmovies.net.contracts.TO.VideoTO;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PageResultVideosTest {
-    private PageResultVideos given;
-    private PageResultVideos expected;
-    private Video video;
+    private PageResultVideosTO given;
+    private PageResultVideosTO expected;
+    private VideoTO video;
 
     @Before
     public void setUp() throws Exception {
 
-        video = new Video();
+        video = new VideoTO();
         video.setId("2");
 
-        given = new PageResultVideos();
+        given = new PageResultVideosTO();
 
-        expected = new PageResultVideos();
+        expected = new PageResultVideosTO();
 
 
     }

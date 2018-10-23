@@ -14,9 +14,8 @@ import com.squareup.picasso.Picasso;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.models.MovieServiceLanguage;
-import com.udacity.popularmovies.models.PageResultReviews;
-import com.udacity.popularmovies.models.PageResultVideos;
-import com.udacity.popularmovies.models.Video;
+import com.udacity.popularmovies.net.contracts.TO.PageResultVideosTO;
+import com.udacity.popularmovies.net.contracts.TO.VideoTO;
 import com.udacity.popularmovies.net.contracts.VideoServiceContract;
 import com.udacity.popularmovies.utils.ProxyHelper;
 
@@ -40,7 +39,7 @@ import retrofit2.Response;
  * @author Erick Prieto
  * @since 2018
  */
-public class DetailActivity extends AppCompatActivity implements Callback<PageResultVideos> {
+public class DetailActivity extends AppCompatActivity implements Callback<PageResultVideosTO> {
 
 
     /**
@@ -57,12 +56,12 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
     /**
      * To format Vote Average to display rate of movie.
      */
-    public static final String VOTE_AVERAGE_FORMAT = "%s/10";
+    private static final String VOTE_AVERAGE_FORMAT = "%s/10";
 
     /**
-     * Hold Details of Movie to show.
+     * Hold Details of MovieTO to show.
      */
-    Movie movieDetails;
+    private Movie movieDetails;
 
     //To assign Views
     private TextView getTitleTextView() {
@@ -99,13 +98,13 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
     }
 
     /**
-     * Download from webservice list of Video {@link Video}.
+     * Download from webservice list of VideoTO {@link VideoTO}.
      * Enqueue Asyncromus WebService to call.
      */
     private void downloadVideoList() {
         VideoServiceContract api = ProxyHelper.getProxy(VideoServiceContract.class);
 
-        Call<PageResultVideos> call = api.getVideos(
+        Call<PageResultVideosTO> call = api.getVideos(
                 ProxyHelper.WEB_SERVICES_LICENSE
                 , 1
                 , MovieServiceLanguage.ENGLISH_US.getValue()
@@ -127,7 +126,7 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
 
         getOverviewTextView().setText(movieDetails.getOverview());
         getYearTextView().setText(getYearFromReleaseDate(movieDetails.getReleaseDate()));
-        getDurationTextView().setText(movieDetails.getOriginalLanguage());
+        getDurationTextView().setText("123 min");
         getRateTextView().setText(formatVoteAverage(movieDetails.getVoteAverage()));
         getStarBar().setNumStars(1);
         getStarBar().setRating(movieDetails.getVoteAverage().floatValue());
@@ -148,7 +147,7 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
     }
 
     /**
-     * Extract Year of release Movie {@link Movie#getReleaseDate()} date.
+     * Extract Year of release MovieTO {@link Movie#getReleaseDate()} date.
      * @param releaseDate Date store on string format {@link Movie#DATE_FORMAT}.
      * @return String with year on format "yyyy" or null if {@see param} is null.
      */
@@ -171,12 +170,12 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
 
 
     @Override
-    public void onResponse(Call<PageResultVideos> call, Response<PageResultVideos> response) {
+    public void onResponse(Call<PageResultVideosTO> call, Response<PageResultVideosTO> response) {
 
     }
 
     @Override
-    public void onFailure(Call<PageResultVideos> call, Throwable t) {
+    public void onFailure(Call<PageResultVideosTO> call, Throwable t) {
 
     }
 

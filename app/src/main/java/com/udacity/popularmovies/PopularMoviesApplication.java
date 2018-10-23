@@ -1,9 +1,18 @@
 package com.udacity.popularmovies;
 
 import android.app.Application;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.AssetManager;
+import android.os.IBinder;
 import android.util.Log;
+
+import com.udacity.popularmovies.activities.SplashActivity;
+import com.udacity.popularmovies.database.PopularMoviesDatabase;
+import com.udacity.popularmovies.services.PopularMoviesDatabaseService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +50,11 @@ public class PopularMoviesApplication extends Application {
     public void onCreate() {
         super.onCreate();
         context = this;
+
+
+        Intent databaseIntent = new Intent(context, PopularMoviesDatabaseService.class);
+        startService(databaseIntent);
+
     }
 
     /**

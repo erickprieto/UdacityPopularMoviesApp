@@ -1,4 +1,4 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net.contracts.TO;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Video implements Parcelable
+public class VideoTO implements Parcelable
 {
 
     @SerializedName("id")
@@ -44,22 +44,22 @@ public class Video implements Parcelable
     @Expose
     private String type;
 
-    public final static Parcelable.Creator<Video> CREATOR = new Creator<Video>() {
+    public final static Parcelable.Creator<VideoTO> CREATOR = new Creator<VideoTO>() {
 
 
         @SuppressWarnings({"unchecked"})
-        public Video createFromParcel(Parcel in) {
-            return new Video(in);
+        public VideoTO createFromParcel(Parcel in) {
+            return new VideoTO(in);
         }
 
-        public Video[] newArray(int size) {
-            return (new Video[size]);
+        public VideoTO[] newArray(int size) {
+            return (new VideoTO[size]);
         }
 
     }
             ;
 
-    protected Video(Parcel in) {
+    protected VideoTO(Parcel in) {
         this.id = ((String) in.readValue((String.class.getClassLoader())));
         this.languageISOCode = ((String) in.readValue((String.class.getClassLoader())));
         this.countryISOCode = ((String) in.readValue((String.class.getClassLoader())));
@@ -70,7 +70,7 @@ public class Video implements Parcelable
         this.type = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    public Video() {
+    public VideoTO() {
     }
 
     public String getId() {
@@ -170,10 +170,10 @@ public class Video implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Video) == false) {
+        if ((other instanceof VideoTO) == false) {
             return false;
         }
-        Video rhs = ((Video) other);
+        VideoTO rhs = ((VideoTO) other);
         return new EqualsBuilder().append(siteProviderName, rhs.siteProviderName)
                 .append(languageISOCode, rhs.languageISOCode)
                 .append(id, rhs.id)

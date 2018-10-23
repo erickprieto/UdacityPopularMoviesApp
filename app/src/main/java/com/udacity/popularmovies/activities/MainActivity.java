@@ -1,9 +1,11 @@
 package com.udacity.popularmovies.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,20 +16,10 @@ import android.view.MenuItem;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapters.MoviesAdapter;
 import com.udacity.popularmovies.models.Movie;
-import com.udacity.popularmovies.models.MovieServiceLanguage;
-import com.udacity.popularmovies.models.MovieServiceReleaseYear;
 import com.udacity.popularmovies.models.MovieServiceSortBy;
-import com.udacity.popularmovies.models.PageResultMovies;
-import com.udacity.popularmovies.net.contracts.MovieServiceContract;
-import com.udacity.popularmovies.presenters.MainPresenter;
-import com.udacity.popularmovies.utils.ProxyHelper;
+import com.udacity.popularmovies.viewmodels.MainViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Show Posters of main Popular Movies from <code>https://api.themoviedb.org/3/</code>.
@@ -45,22 +37,38 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
-     * Identifier to serialize {@link MainPresenter#movies}
+     * Identifier to serialize {@link MainViewModel#movies}
      */
     public static final String ID_SERIAL_MOVIES_LIST = "moviesList";
 
-    private MainPresenter presenter;
+    private MainViewModel presenter;
 
     //To assign Views
     private RecyclerView getMoviesRecyclerView() {
-        return (RecyclerView) findViewById(R.id.movie_RecyclerView); }
+        return (RecyclerView) findViewById(R.id.mainActivity_movieRecyclerView);
+    }
+    private SwipeRefreshLayout getSwipeRefreshLayout() {
+        return (SwipeRefreshLayout) findViewById(R.id.mainActivity_swipeRefreshtLayout);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.presenter = new MainPresenter();
+        this.presenter = ViewModelProviders.of(this).get(MainViewModel.class);
+
+
+        getSwipeRefreshLayout().setRefreshing(true);
+        getSwipeRefreshLayout().setColorSchemeResources(R.color.colorPrimary);
+        getSwipeRefreshLayout().setProgressBackgroundColorSchemeResource(R.color.colorAccent);
+        getSwipeRefreshLayout().setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.downloadPopularMovieList();
+                getSwipeRefreshLayout().setRefreshing(false);
+            }
+        });
 
         if (savedInstanceState != null) {
             this.presenter.setMovies(
@@ -76,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         getMoviesRecyclerView().setLayoutManager(getGridLayoutManager());
         assignMoviesViews();
+        getSwipeRefreshLayout().setRefreshing(false);
     }
 
     /**
@@ -117,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuitem_sortby_rated:
                 this.presenter.downloadTopRatedMovieList();
                 return true;
+            case R.id.menuitem_favorites:
+                //TODO
+                this.presenter.downloadDiscoverMovieList(MovieServiceSortBy.VOTE_AVERAGE_ASC);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -151,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Launch {@link DetailActivity} with extra data contained {@link Movie} details.
-     * @param details <code>Movie</code> to send data into <code>Intent</code>
+     * @param details <code>MovieTO</code> to send data into <code>Intent</code>
      */
     public void startDetailActivity(Movie details) {
-        Log.v(TAG, "Movie sent: " + details.toString());
+        Log.v(TAG, "MovieTO sent: " + details.toString());
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.ID_EXTRA_MOVIE_DETAIL, details);
         this.startActivity(intent);

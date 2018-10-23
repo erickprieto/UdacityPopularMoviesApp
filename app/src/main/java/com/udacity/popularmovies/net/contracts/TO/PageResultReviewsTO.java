@@ -1,4 +1,4 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net.contracts.TO;
 
 import java.util.List;
 import android.os.Parcel;
@@ -6,11 +6,12 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class PageResultReviews implements Parcelable
+public class PageResultReviewsTO implements Parcelable
 {
 
     @SerializedName("id")
@@ -23,7 +24,7 @@ public class PageResultReviews implements Parcelable
 
     @SerializedName("reviews")
     @Expose
-    private List<Review> reviews = null;
+    private List<ReviewTO> reviews = null;
 
     @SerializedName("total_pages")
     @Expose
@@ -33,30 +34,30 @@ public class PageResultReviews implements Parcelable
     @Expose
     private Integer totalResults;
 
-    public final static Parcelable.Creator<PageResultReviews> CREATOR = new Creator<PageResultReviews>() {
+    public final static Parcelable.Creator<PageResultReviewsTO> CREATOR = new Creator<PageResultReviewsTO>() {
 
 
         @SuppressWarnings({"unchecked"})
-        public PageResultReviews createFromParcel(Parcel in) {
-            return new PageResultReviews(in);
+        public PageResultReviewsTO createFromParcel(Parcel in) {
+            return new PageResultReviewsTO(in);
         }
 
-        public PageResultReviews[] newArray(int size) {
-            return (new PageResultReviews[size]);
+        public PageResultReviewsTO[] newArray(int size) {
+            return (new PageResultReviewsTO[size]);
         }
 
     }
             ;
 
-    protected PageResultReviews(Parcel in) {
+    protected PageResultReviewsTO(Parcel in) {
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.reviews, (com.udacity.popularmovies.models.Review.class.getClassLoader()));
+        in.readList(this.reviews, (ReviewTO.class.getClassLoader()));
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
-    public PageResultReviews() {
+    public PageResultReviewsTO() {
     }
 
     public Integer getId() {
@@ -75,11 +76,11 @@ public class PageResultReviews implements Parcelable
         this.page = page;
     }
 
-    public List<Review> getReviews() {
+    public List<ReviewTO> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(List<ReviewTO> reviews) {
         this.reviews = reviews;
     }
 
@@ -124,10 +125,10 @@ public class PageResultReviews implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof PageResultReviews) == false) {
+        if ((other instanceof PageResultReviewsTO) == false) {
             return false;
         }
-        PageResultReviews rhs = ((PageResultReviews) other);
+        PageResultReviewsTO rhs = ((PageResultReviewsTO) other);
         return new EqualsBuilder().append(id, rhs.id)
                 .append(reviews, rhs.reviews)
                 .append(totalResults, rhs.totalResults)

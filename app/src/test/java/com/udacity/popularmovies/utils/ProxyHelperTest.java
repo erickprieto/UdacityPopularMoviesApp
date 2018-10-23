@@ -1,6 +1,6 @@
 package com.udacity.popularmovies.utils;
 
-import com.udacity.popularmovies.models.PageResultMovies;
+import com.udacity.popularmovies.net.contracts.TO.PageResultMoviesTO;
 import com.udacity.popularmovies.net.contracts.MovieServiceContract;
 
 import retrofit2.Call;
@@ -19,7 +19,7 @@ public class ProxyHelperTest {
     private String expected;
     private String endpoint;
     private MovieServiceContract api;
-    private Call<PageResultMovies> call;
+    private Call<PageResultMoviesTO> call;
 
 //    @Before
 //    public void setUp() throws Exception {
