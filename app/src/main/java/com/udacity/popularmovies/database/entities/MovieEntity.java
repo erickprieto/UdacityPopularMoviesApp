@@ -5,37 +5,32 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.graphics.Bitmap;
+import android.graphics.ColorSpace;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import com.udacity.popularmovies.database.converters.BitmapTypeConverter;
+import com.udacity.popularmovies.database.converters.BooleanTypeConverter;
+import com.udacity.popularmovies.database.converters.DateTypeConverter;
+import com.udacity.popularmovies.models.Movie;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 
 @Entity(tableName = "movie")
 public class MovieEntity implements Parcelable {
 
-    @PrimaryKey
-    private int id;
-
-    @ColumnInfo(name = "title")
-    private String title;
-
-    @ColumnInfo(name = "overview")
-    private String overview;
-
-    @ColumnInfo(name = "releaseDate")
-    private String releaseDate;
-
-    @ColumnInfo(name = "rating")
-    private String rating;
-
-    //@ColumnInfo(name = "poster")
     @Ignore
-    private Bitmap poster;
-
     public static final Creator<MovieEntity> CREATOR = new Creator<MovieEntity>() {
         @Override
         public MovieEntity createFromParcel(Parcel in) {
@@ -48,26 +43,74 @@ public class MovieEntity implements Parcelable {
         }
     };
 
+    @PrimaryKey
+    private int id;
+
+    @ColumnInfo(name = "title", typeAffinity = ColumnInfo.TEXT)
+    private String title;
+
+    @ColumnInfo(name = "overview", typeAffinity = ColumnInfo.TEXT)
+    private String overview;
+
+    @ColumnInfo(name = "releaseDate", typeAffinity = ColumnInfo.INTEGER)
+    @TypeConverters({DateTypeConverter.class})
+    private Date releaseDate;
+
+    @ColumnInfo(name = "rating", typeAffinity = ColumnInfo.REAL)
+    private double rating;
+
+    @ColumnInfo(name = "poster_file", typeAffinity = ColumnInfo.TEXT)
+    private String posterFileName;
+
+    @ColumnInfo(name = "poster_jpg", typeAffinity = ColumnInfo.BLOB)
+    @TypeConverters({BitmapTypeConverter.class})
+    private Bitmap poster;
+
+    @NonNull
+    @ColumnInfo(name = "favorite", typeAffinity = ColumnInfo.INTEGER)
+    private int favorite;
+
+    @ColumnInfo(name = "popular", typeAffinity = ColumnInfo.INTEGER)
+    private int popular;
+
+    @ColumnInfo(name = "created", typeAffinity = ColumnInfo.INTEGER)
+    @TypeConverters({DateTypeConverter.class})
+    private Date created;
+
+    @Ignore
     public MovieEntity() { }
 
-    public MovieEntity(int id, String title, String overview, String releaseDate, String rating, Bitmap poster) {
+
+    public MovieEntity(int id
+            , String title
+            , String overview
+            , Date releaseDate
+            , double rating
+            , String posterFileName
+            , Bitmap poster
+            , int favorite
+            , int popular
+            , Date created) {
         this.id = id;
         this.title = title;
         this.overview = overview;
         this.releaseDate = releaseDate;
         this.rating = rating;
+        this.posterFileName = posterFileName;
         this.poster = poster;
+        this.favorite = favorite;
+        this.popular = popular;
+        this.created = created;
     }
 
-
-    protected MovieEntity(Parcel in) {
-        id = in.readInt();
-        title = in.readString();
-        overview = in.readString();
-        releaseDate = in.readString();
-        rating = in.readString();
-        poster = in.readParcelable(Bitmap.class.getClassLoader());
+    @Ignore
+    protected MovieEntity( Parcel in) {
+        this.id = in.readInt();
+        this.title = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = (Date) in.readValue(Date.class.getClassLoader());
     }
+
 
     public int getId() {
         return id;
@@ -93,20 +136,28 @@ public class MovieEntity implements Parcelable {
         this.overview = overview;
     }
 
-    public String getReleaseDate() {
+    public Date getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
+    public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
     }
 
-    public String getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public String getPosterFileName() {
+        return posterFileName;
+    }
+
+    public void setPosterFileName(String posterFileName) {
+        this.posterFileName = posterFileName;
     }
 
     public Bitmap getPoster() {
@@ -117,44 +168,63 @@ public class MovieEntity implements Parcelable {
         this.poster = poster;
     }
 
-    //get
-    //set
-
-    @Override
-    public int describeContents() {
-        return 0;
+    @NonNull
+    public int getFavorite() {
+        return favorite;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(title);
-        dest.writeString(overview);
-        dest.writeString(releaseDate);
-        dest.writeString(rating);
-        dest.writeParcelable(poster, flags);
+    public void setFavorite(@NonNull int favorite) {
+        this.favorite = favorite;
     }
 
+    @NonNull
+    public int getPopular() {
+        return popular;
+    }
+
+    public void setPopular(@NonNull int popular) {
+        this.popular = popular;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    @Ignore
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("id", id)
-                .append("title", title)
-                .append("releaseDate", releaseDate)
-                .append("overview", overview)
+                .append("id", this.id)
+                .append("title", this.title)
+                .append("releaseDate", this.releaseDate)
+                .append("posterFileName", this.posterFileName)
+                .append("overview", this.overview)
+                .append("popular", this.popular)
+                .append("favorite", this.favorite)
+                .append("created", this.created)
                 .toString();
     }
 
+    @Ignore
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(id)
-                .append(title)
-                .append(releaseDate)
-                .append(overview)
+                .append(this.id)
+                .append(this.title)
+                .append(this.releaseDate)
+                .append(this.posterFileName)
+                .append(this.overview)
+                .append(this.popular)
+                .append(this.favorite)
+                .append(this.created)
                 .toHashCode();
     }
 
+    @Ignore
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -165,10 +235,65 @@ public class MovieEntity implements Parcelable {
         }
         MovieEntity rhs = ((MovieEntity) other);
         return new EqualsBuilder()
-                .append(id, rhs.id)
-                .append(title, rhs.title)
-                .append(releaseDate, rhs.releaseDate)
-                .append(overview, rhs.overview)
+                .append(this.id, rhs.id)
+                .append(this.title, rhs.title)
+                .append(this.releaseDate, rhs.releaseDate)
+                .append(this.overview, rhs.overview)
+                .append(this.posterFileName, rhs.posterFileName)
+                .append(this.popular, rhs.popular)
+                .append(this.favorite, rhs.favorite)
+                .append(this.created, rhs.created)
                 .isEquals();
     }
+
+    @Ignore
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Ignore
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeString(overview);
+        dest.writeValue(releaseDate);
+    }
+
+    @Ignore
+    public Movie toModel() {
+        SimpleDateFormat sdf = new SimpleDateFormat(Movie.DATE_FORMAT);
+
+        return new Movie(this.id
+                , this.title
+                , this.overview
+                , sdf.format(this.releaseDate)
+                , this.posterFileName
+                , this.rating);
+    }
+
+    @Ignore
+    public static final List<Movie> toListModel(List<MovieEntity> entities) {
+        List<Movie> result = new ArrayList<Movie>();
+        for (MovieEntity entity : entities) {
+            result.add(entity.toModel());
+        }
+        return result;
+    }
+
+    public  static final MovieEntity fromModel(Movie model) {
+        SimpleDateFormat sdf = new SimpleDateFormat(Movie.DATE_FORMAT);
+        return new MovieEntity(model.getId()
+                , model.getTitle()
+                , model.getOverview()
+                , null
+                , model.getVoteAverage()
+                ,model.getPosterPath()
+                ,null
+                ,0
+                ,0
+                ,null);
+    }
+
 }

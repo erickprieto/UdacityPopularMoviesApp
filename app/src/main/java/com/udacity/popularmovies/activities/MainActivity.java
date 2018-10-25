@@ -1,10 +1,12 @@
 package com.udacity.popularmovies.activities;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,6 +22,7 @@ import com.udacity.popularmovies.models.MovieServiceSortBy;
 import com.udacity.popularmovies.viewmodels.MainViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Show Posters of main Popular Movies from <code>https://api.themoviedb.org/3/</code>.
@@ -37,11 +40,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
-     * Identifier to serialize {@link MainViewModel#movies}
+     * Identifier to serialize {@link MainViewModel#getMovies()}
      */
     public static final String ID_SERIAL_MOVIES_LIST = "moviesList";
 
-    private MainViewModel presenter;
+
+    private MainViewModel mainViewModel;
+
+    /**
+     * Adapter to fill {@link RecyclerView} with {@link Movie}.
+     */
+    private MoviesAdapter adapter;
 
     //To assign Views
     private RecyclerView getMoviesRecyclerView() {
@@ -51,12 +60,28 @@ public class MainActivity extends AppCompatActivity {
         return (SwipeRefreshLayout) findViewById(R.id.mainActivity_swipeRefreshtLayout);
     }
 
+    public MoviesAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(MoviesAdapter adapter) {
+        this.adapter = adapter;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.presenter = ViewModelProviders.of(this).get(MainViewModel.class);
+        this.mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        this.mainViewModel.movieRepo.getPopularMovies().observe(this, new Observer<List<Movie>>() {
+
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                adapter.putMovies(movies);
+            }
+        });
 
 
         getSwipeRefreshLayout().setRefreshing(true);
@@ -65,22 +90,15 @@ public class MainActivity extends AppCompatActivity {
         getSwipeRefreshLayout().setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.downloadPopularMovieList();
+                mainViewModel.movieRepo.downloadPopularMovieList();
                 getSwipeRefreshLayout().setRefreshing(false);
             }
         });
 
-        if (savedInstanceState != null) {
-            this.presenter.setMovies(
-                    new ArrayList(savedInstanceState.getParcelableArrayList(ID_SERIAL_MOVIES_LIST))
-            );
-        }
 
-        if(this.presenter.getMovies().size() == 0) {
-            this.presenter.downloadPopularMovieList();
-        } else {
-            assignMoviesViews();
-        }
+
+        this.mainViewModel.movieRepo.downloadPopularMovieList();
+
 
         getMoviesRecyclerView().setLayoutManager(getGridLayoutManager());
         assignMoviesViews();
@@ -121,14 +139,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuitem_sortby_popular:
-                this.presenter.downloadPopularMovieList();
+                this.mainViewModel.movieRepo.downloadPopularMovieList();
                 return true;
             case R.id.menuitem_sortby_rated:
-                this.presenter.downloadTopRatedMovieList();
+                this.mainViewModel.movieRepo.downloadTopRatedMovieList();
                 return true;
             case R.id.menuitem_favorites:
                 //TODO
-                this.presenter.downloadDiscoverMovieList(MovieServiceSortBy.VOTE_AVERAGE_ASC);
+                this.mainViewModel.movieRepo.downloadDiscoverMovieList(MovieServiceSortBy.VOTE_AVERAGE_ASC);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -141,14 +159,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (this.presenter.getMovies() != null) {
-            outState.putParcelableArrayList(ID_SERIAL_MOVIES_LIST, new ArrayList<Movie>(this.presenter.getMovies()));
-        }
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
     }
@@ -158,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void assignMoviesViews() {
 
-        this.presenter.setAdapter(new MoviesAdapter(this.presenter.getMovies()));
-        getMoviesRecyclerView().setAdapter(this.presenter.getAdapter());
+        adapter = new MoviesAdapter(this.mainViewModel.getMovies());
+        getMoviesRecyclerView().setAdapter(adapter);
     }
 
     /**

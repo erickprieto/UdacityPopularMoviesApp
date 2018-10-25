@@ -19,6 +19,21 @@ import java.util.List;
  */
 public class Movie implements Parcelable{
 
+
+    public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
+
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return (new Movie[size]);
+        }
+
+    };
+
     /**
      * Date Format of {@link Movie#releaseDate}.
      */
@@ -55,21 +70,6 @@ public class Movie implements Parcelable{
      */
     private Double voteAverage;
 
-
-    public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
-
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return (new Movie[size]);
-        }
-
-    };
-
     protected Movie(Parcel in) {
         this.id = in.readInt();
         this.voteAverage = in.readDouble();
@@ -84,7 +84,9 @@ public class Movie implements Parcelable{
      */
     public Movie() { }
 
-    public Movie(Integer id, String title, String overview, String releaseDate, String posterPath, Double voteAverage) {
+    public Movie(Integer id
+            , String title, String overview
+            , String releaseDate, String posterPath, Double voteAverage) {
         this.id = id;
         this.title = title;
         this.overview = overview;

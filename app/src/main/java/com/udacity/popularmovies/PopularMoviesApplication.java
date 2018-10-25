@@ -11,7 +11,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.udacity.popularmovies.activities.SplashActivity;
-import com.udacity.popularmovies.database.PopularMoviesDatabase;
 import com.udacity.popularmovies.services.PopularMoviesDatabaseService;
 
 import java.io.IOException;

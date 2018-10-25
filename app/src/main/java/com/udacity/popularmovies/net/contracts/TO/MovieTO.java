@@ -362,7 +362,7 @@ public class MovieTO implements Parcelable{
 
     public static final List<Movie> toListModel(List<MovieTO> tos) {
          List<Movie> result = new ArrayList<>();
-         for (MovieTO to: tos) {
+         for (MovieTO to : tos) {
             result.add(to.toModel());
          }
          return result;

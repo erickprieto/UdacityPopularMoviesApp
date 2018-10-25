@@ -1,14 +1,13 @@
 package com.udacity.popularmovies.services;
 
 import android.app.Service;
+
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+
 import android.os.IBinder;
-import android.os.IInterface;
-import android.os.Parcel;
-import android.os.RemoteException;
-import android.support.annotation.NonNull;
+
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -16,8 +15,9 @@ import com.udacity.popularmovies.database.PopularMoviesDatabase;
 import com.udacity.popularmovies.database.entities.MovieEntity;
 import com.udacity.popularmovies.utils.AppExecutors;
 
-import java.io.FileDescriptor;
+import java.util.Date;
 import java.util.List;
+
 
 public class PopularMoviesDatabaseService extends Service {
 
@@ -25,6 +25,7 @@ public class PopularMoviesDatabaseService extends Service {
      * Tag that identify all messages sent to loggger by this class.
      */
     private static final String TAG = PopularMoviesDatabaseService.class.getSimpleName();
+
 
     PopularMoviesDatabase db;
     Context context = this;
@@ -47,14 +48,31 @@ public class PopularMoviesDatabaseService extends Service {
         new AppExecutors().diskIO().execute(new Runnable() {
             @Override
             public void run() {
+
                 db = Room
-                        .databaseBuilder(context, PopularMoviesDatabase.class, "PopularMoviesDatabase")
-                        //.allowMainThreadQueries()
+                        .databaseBuilder(context
+                                , PopularMoviesDatabase.class
+                                , PopularMoviesDatabase.NAME_POPULAR_MOVIES_DATABASE)
                         .build();
-                List<MovieEntity> a = db.movieDao().getAll();
-                Log.v(TAG, ((List) a).toString());
+                db.movieDao().insertMovie(
+                        new MovieEntity(1
+                                ,""
+                                ,""
+                                , new Date(1980,1,1)
+                                ,2.0
+                                ,""
+                                ,null
+                                ,0
+                                ,0
+                                , new Date(2018,1,1)));
+
+                Object a = db.movieDao().getAll();
+
+
+                Log.v(TAG, a != null ? a.toString() : "NULL ================================");
+
             }
-        });
+       });
 
         return super.onStartCommand(intent, flags, startId);
     }
