@@ -1,10 +1,8 @@
 package com.udacity.popularmovies.models;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -17,7 +15,7 @@ import java.util.List;
  * @author Erick Prieto
  * @since 2018
  */
-public class Movie implements Parcelable{
+public class Movie implements Parcelable {
 
 
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -65,6 +63,12 @@ public class Movie implements Parcelable{
      */
     private String posterPath;
 
+    private Bitmap posterImage;
+
+    private List<Review> reviews;
+
+    private List<Video> videos;
+
     /**
      * Establish a points of qualification between 0 and 10 for this movie.
      */
@@ -86,7 +90,8 @@ public class Movie implements Parcelable{
 
     public Movie(Integer id
             , String title, String overview
-            , String releaseDate, String posterPath, Double voteAverage) {
+            , String releaseDate, String posterPath
+            , Double voteAverage) {
         this.id = id;
         this.title = title;
         this.overview = overview;

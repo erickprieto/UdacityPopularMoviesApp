@@ -7,13 +7,12 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.graphics.Bitmap;
-import android.graphics.ColorSpace;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.udacity.popularmovies.database.converters.BitmapTypeConverter;
-import com.udacity.popularmovies.database.converters.BooleanTypeConverter;
+import com.udacity.popularmovies.database.converters.PseudoBooleanTypeConverter;
 import com.udacity.popularmovies.database.converters.DateTypeConverter;
 import com.udacity.popularmovies.models.Movie;
 
@@ -21,7 +20,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,11 +67,8 @@ public class MovieEntity implements Parcelable {
     @TypeConverters({BitmapTypeConverter.class})
     private Bitmap poster;
 
-    @NonNull
-    @ColumnInfo(name = "favorite", typeAffinity = ColumnInfo.INTEGER)
-    private int favorite;
-
     @ColumnInfo(name = "popular", typeAffinity = ColumnInfo.INTEGER)
+    @TypeConverters({PseudoBooleanTypeConverter.class})
     private int popular;
 
     @ColumnInfo(name = "created", typeAffinity = ColumnInfo.INTEGER)
@@ -88,7 +86,6 @@ public class MovieEntity implements Parcelable {
             , double rating
             , String posterFileName
             , Bitmap poster
-            , int favorite
             , int popular
             , Date created) {
         this.id = id;
@@ -98,7 +95,6 @@ public class MovieEntity implements Parcelable {
         this.rating = rating;
         this.posterFileName = posterFileName;
         this.poster = poster;
-        this.favorite = favorite;
         this.popular = popular;
         this.created = created;
     }
@@ -169,15 +165,6 @@ public class MovieEntity implements Parcelable {
     }
 
     @NonNull
-    public int getFavorite() {
-        return favorite;
-    }
-
-    public void setFavorite(@NonNull int favorite) {
-        this.favorite = favorite;
-    }
-
-    @NonNull
     public int getPopular() {
         return popular;
     }
@@ -204,7 +191,6 @@ public class MovieEntity implements Parcelable {
                 .append("posterFileName", this.posterFileName)
                 .append("overview", this.overview)
                 .append("popular", this.popular)
-                .append("favorite", this.favorite)
                 .append("created", this.created)
                 .toString();
     }
@@ -219,7 +205,6 @@ public class MovieEntity implements Parcelable {
                 .append(this.posterFileName)
                 .append(this.overview)
                 .append(this.popular)
-                .append(this.favorite)
                 .append(this.created)
                 .toHashCode();
     }
@@ -241,7 +226,6 @@ public class MovieEntity implements Parcelable {
                 .append(this.overview, rhs.overview)
                 .append(this.posterFileName, rhs.posterFileName)
                 .append(this.popular, rhs.popular)
-                .append(this.favorite, rhs.favorite)
                 .append(this.created, rhs.created)
                 .isEquals();
     }
@@ -275,6 +259,7 @@ public class MovieEntity implements Parcelable {
 
     @Ignore
     public static final List<Movie> toListModel(List<MovieEntity> entities) {
+        if(entities == null) { return null; }
         List<Movie> result = new ArrayList<Movie>();
         for (MovieEntity entity : entities) {
             result.add(entity.toModel());
@@ -282,18 +267,18 @@ public class MovieEntity implements Parcelable {
         return result;
     }
 
-    public  static final MovieEntity fromModel(Movie model) {
+    public static final MovieEntity fromModel(Movie model, boolean popular) {
         SimpleDateFormat sdf = new SimpleDateFormat(Movie.DATE_FORMAT);
+
         return new MovieEntity(model.getId()
                 , model.getTitle()
                 , model.getOverview()
-                , null
+                , sdf.parse(model.getReleaseDate(),new ParsePosition(0))
                 , model.getVoteAverage()
-                ,model.getPosterPath()
-                ,null
-                ,0
-                ,0
-                ,null);
+                , model.getPosterPath()
+                , null
+                , popular == true ? 1 : 0
+                , new Date(System.currentTimeMillis()));
     }
 
 }

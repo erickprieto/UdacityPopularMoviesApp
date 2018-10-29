@@ -7,12 +7,14 @@
     <!-- Menu-->
     <string name="MenuItem_sortByPopular">Popular</string>
     <string name="MenuItem_sortByRated">Rated</string>
+    <string name="MenuItem_favorites">Favorites</string>
 
     <!-- Detail Activity-->
     <string name="DetailActivity_detailAlsoKnownAsLabel">Also known as:</string>
     <string name="DetailActivity_detailPlaceOfOriginLabel">Place of origin:</string>
     <string name="DetailActivity_detailDescriptionLabel">Description:</string>
     <string name="DetailActivity_detailIngredientsLabel">Ingredients:</string>
+    <string name="DetailActivity_labelFavoriteButton">Favorite</string>
 
     <!-- Content descriptions-->
     <string name="DetailActivity_posterDescriptionImageView">poster</string>
@@ -30,6 +32,5 @@
 
 
     <string name="a">Test String</string>
-    <string name="MenuItem_favorites">Favorites</string>
 
 </resources>

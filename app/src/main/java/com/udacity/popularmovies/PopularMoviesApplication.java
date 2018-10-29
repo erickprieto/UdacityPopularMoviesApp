@@ -10,6 +10,8 @@ import android.content.res.AssetManager;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 import com.udacity.popularmovies.activities.SplashActivity;
 import com.udacity.popularmovies.services.PopularMoviesDatabaseService;
 
@@ -45,16 +47,32 @@ public class PopularMoviesApplication extends Application {
      */
     private static Properties configurationProperties;
 
+    /**
+     * Uses notification otto event bus Framework. Otto avoid uses callbacks,
+     * that is deacopuple publisher and subscribers events.
+     * {@link ThreadEnforcer#ANY} establish publish events on One thread and the subscribers on another.
+     * Publishes events on background thread and subscribers on UI thread.
+     */
+    private static Bus eventBus;
+
+    private Intent databaseIntent;
+
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
 
-
-        Intent databaseIntent = new Intent(context, PopularMoviesDatabaseService.class);
-        startService(databaseIntent);
+        this.databaseIntent  = new Intent(context, PopularMoviesDatabaseService.class);
+        startService(this.databaseIntent);
 
     }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        stopService(this.databaseIntent);
+    }
+
 
     /**
      * Obtain configuration Data of this application, like users of webservices and databases.
@@ -100,4 +118,17 @@ public class PopularMoviesApplication extends Application {
         String atributo = context.getConfigurationProperties().getProperty(key);
         return atributo;
     }
+
+    /**
+     * Gets otto event bus. Singleton Object.
+     *
+     * @return Otto event bus.
+     */
+    public static Bus getEventBus() {
+        if (eventBus == null) {
+            eventBus = new Bus(ThreadEnforcer.ANY);
+        }
+        return eventBus;
+    }
+
 }

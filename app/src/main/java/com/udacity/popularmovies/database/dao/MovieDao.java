@@ -6,6 +6,7 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import com.udacity.popularmovies.database.entities.MovieEntity;
 
@@ -20,9 +21,9 @@ public interface MovieDao {
     @Query("SELECT * FROM movie WHERE id IN (:ids)")
     LiveData<List<MovieEntity>> loadAllByIds(int[] ids);
 
-    @Query("SELECT * FROM movie WHERE title LIKE :first AND "
-            + "overview LIKE :last LIMIT 1")
-    LiveData<MovieEntity> findByName(String first, String last);
+    @Query("SELECT * FROM movie WHERE title LIKE :title AND "
+            + "overview LIKE :over LIMIT 1")
+    LiveData<MovieEntity> findByName(String title, String over);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(MovieEntity... movies);

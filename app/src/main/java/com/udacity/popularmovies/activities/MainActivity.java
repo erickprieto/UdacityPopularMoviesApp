@@ -2,9 +2,12 @@ package com.udacity.popularmovies.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,9 +22,9 @@ import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapters.MoviesAdapter;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.models.MovieServiceSortBy;
+import com.udacity.popularmovies.services.PopularMoviesDatabaseService;
 import com.udacity.popularmovies.viewmodels.MainViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +55,27 @@ public class MainActivity extends AppCompatActivity {
      */
     private MoviesAdapter adapter;
 
+    private Intent intentService;
+    private PopularMoviesDatabaseService pmService;
+    private boolean connectedService;
+    private PopularMoviesServiceConnection conn = new PopularMoviesServiceConnection();
+
+    public class PopularMoviesServiceConnection implements ServiceConnection{
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            pmService= ((PopularMoviesDatabaseService.PopularMoviesDatabaseServiceBinder) service).getService();
+            connectedService = true;
+            firstScreen();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            pmService = null;
+            connectedService = false;
+        }
+    }
+
     //To assign Views
     private RecyclerView getMoviesRecyclerView() {
         return (RecyclerView) findViewById(R.id.mainActivity_movieRecyclerView);
@@ -71,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        intentService = new Intent(this, PopularMoviesDatabaseService.class);
+        if(!connectedService) {
+            bindService(intentService, conn, BIND_AUTO_CREATE);
+        }
         setContentView(R.layout.activity_main);
 
         this.mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -90,19 +119,16 @@ public class MainActivity extends AppCompatActivity {
         getSwipeRefreshLayout().setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mainViewModel.movieRepo.downloadPopularMovieList();
+                pmService.downloadPopularMovieList();
                 getSwipeRefreshLayout().setRefreshing(false);
             }
         });
 
 
 
-        this.mainViewModel.movieRepo.downloadPopularMovieList();
-
-
         getMoviesRecyclerView().setLayoutManager(getGridLayoutManager());
         assignMoviesViews();
-        getSwipeRefreshLayout().setRefreshing(false);
+
     }
 
     /**
@@ -139,14 +165,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuitem_sortby_popular:
-                this.mainViewModel.movieRepo.downloadPopularMovieList();
+                this.pmService.downloadPopularMovieList();
                 return true;
             case R.id.menuitem_sortby_rated:
-                this.mainViewModel.movieRepo.downloadTopRatedMovieList();
+                this.pmService.downloadTopRatedMovieList();
                 return true;
             case R.id.menuitem_favorites:
-                //TODO
-                this.mainViewModel.movieRepo.downloadDiscoverMovieList(MovieServiceSortBy.VOTE_AVERAGE_ASC);
+                this.pmService.listFavoritesMovies();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -154,13 +179,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+
+    }
+
+    private void firstScreen() {
+        this.pmService.downloadPopularMovieList();
+        getSwipeRefreshLayout().setRefreshing(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        try{
+            if (connectedService && pmService != null) {
+                unbindService(conn);
+            }
+        } catch (IllegalArgumentException iae) {
+            Log.e(TAG, iae.getMessage());
+        }
     }
 
     /**

@@ -1,70 +1,46 @@
-package com.udacity.popularmovies.net.contracts.TO;
+package com.udacity.popularmovies.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.udacity.popularmovies.models.Video;
+public class Video implements Parcelable {
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class VideoTO implements Parcelable
-{
-
-    @SerializedName("id")
-    @Expose
     private String id;
 
-    @SerializedName("iso_639_1")
-    @Expose
     private String languageISOCode;
 
-    @SerializedName("iso_3166_1")
-    @Expose
     private String countryISOCode;
 
-    @SerializedName("resourceKey")
-    @Expose
     private String resourceKey;
 
-    @SerializedName("name")
-    @Expose
     private String name;
 
-    @SerializedName("site")
-    @Expose
     private String siteProviderName;
 
-    @SerializedName("size")
-    @Expose
     private Integer size;
 
-    @SerializedName("type")
-    @Expose
     private String type;
 
-    public final static Parcelable.Creator<VideoTO> CREATOR = new Creator<VideoTO>() {
+    public final static Parcelable.Creator<Video> CREATOR = new Creator<Video>() {
 
 
         @SuppressWarnings({"unchecked"})
-        public VideoTO createFromParcel(Parcel in) {
-            return new VideoTO(in);
+        public Video createFromParcel(Parcel in) {
+            return new Video(in);
         }
 
-        public VideoTO[] newArray(int size) {
-            return (new VideoTO[size]);
+        public Video[] newArray(int size) {
+            return (new Video[size]);
         }
 
     }
             ;
 
-    protected VideoTO(Parcel in) {
+    protected Video(Parcel in) {
         this.id = ((String) in.readValue((String.class.getClassLoader())));
         this.languageISOCode = ((String) in.readValue((String.class.getClassLoader())));
         this.countryISOCode = ((String) in.readValue((String.class.getClassLoader())));
@@ -75,7 +51,25 @@ public class VideoTO implements Parcelable
         this.type = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    public VideoTO() {
+    public Video() {
+    }
+
+    public Video(String id
+            , String languageISOCode
+            , String countryISOCode
+            , String resourceKey
+            , String name
+            , String siteProviderName
+            , Integer size
+            , String type) {
+        this.id = id;
+        this.languageISOCode = languageISOCode;
+        this.countryISOCode = countryISOCode;
+        this.resourceKey = resourceKey;
+        this.name = name;
+        this.siteProviderName = siteProviderName;
+        this.size = size;
+        this.type = type;
     }
 
     public String getId() {
@@ -175,10 +169,10 @@ public class VideoTO implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof VideoTO) == false) {
+        if ((other instanceof Video) == false) {
             return false;
         }
-        VideoTO rhs = ((VideoTO) other);
+        Video rhs = ((Video) other);
         return new EqualsBuilder().append(siteProviderName, rhs.siteProviderName)
                 .append(languageISOCode, rhs.languageISOCode)
                 .append(id, rhs.id)
@@ -205,22 +199,5 @@ public class VideoTO implements Parcelable
         return 0;
     }
 
-    public Video toModel() {
-        return new Video(this.id
-                , this.languageISOCode
-                , this.countryISOCode
-                , this.resourceKey
-                , this.name
-                , this.siteProviderName
-                , this.size
-                , this.type);
-    }
 
-    public static List<Video> toListModel(List<VideoTO> tos) {
-        List<Video> result = new ArrayList<>();
-        for (VideoTO to : tos) {
-            result.add(to.toModel());
-        }
-        return result;
-    }
 }

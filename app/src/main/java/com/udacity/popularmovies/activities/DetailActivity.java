@@ -1,5 +1,6 @@
 package com.udacity.popularmovies.activities;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import android.content.Intent;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.popularmovies.PopularMoviesApplication;
+import com.udacity.popularmovies.events.ImageDownloadedEvent;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.models.MovieServiceLanguage;
@@ -95,6 +98,9 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
         Log.v(TAG, movieDetails.toString());
 
         toFillUI();
+
+        PopularMoviesApplication.getEventBus().post(
+                new ImageDownloadedEvent(1,"a.jpg", Bitmap.createBitmap(1,1, Bitmap.Config.ALPHA_8)));
     }
 
     /**
@@ -132,7 +138,7 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
         getStarBar().setRating(movieDetails.getVoteAverage().floatValue());
         getStarBar().setVisibility(View.GONE);
         //Hide Button to Vote.
-        getFavoriteButton().setVisibility(View.GONE);
+        getFavoriteButton().setVisibility(View.VISIBLE);
     }
 
 

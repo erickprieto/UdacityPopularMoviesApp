@@ -30,38 +30,43 @@ import java.util.concurrent.Executors;
  */
 public class AppExecutors {
 
-    private static final int THREAD_COUNT = 3;
+    private static final int NETWORK_THREAD_COUNT = 3;
 
-    private final Executor diskIO;
+    private static Executor diskIOExecutor;
 
-    private final Executor networkIO;
+    private static Executor networkIOExecutor;
 
-    private final Executor mainThread;
+    private static Executor mainThreadExecutor;
 
-    AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
-        this.diskIO = diskIO;
-        this.networkIO = networkIO;
-        this.mainThread = mainThread;
+    private AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
+        this.diskIOExecutor = diskIO;
+        this.networkIOExecutor = networkIO;
+        this.mainThreadExecutor = mainThread;
     }
 
-    public AppExecutors() {
-        this(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(THREAD_COUNT),
-                new MainThreadExecutor());
+    private AppExecutors() {
+        this(Executors.newSingleThreadExecutor()
+                , Executors.newFixedThreadPool(NETWORK_THREAD_COUNT)
+                , new MainThreadExecutor());
     }
 
-    public Executor diskIO() {
-        return diskIO;
+    public static Executor getDiskIO() {
+        if (diskIOExecutor == null) { new AppExecutors(); }
+        return diskIOExecutor;
     }
 
-    public Executor networkIO() {
-        return networkIO;
+    public static Executor getNetworkIO() {
+        if (networkIOExecutor == null) { new AppExecutors(); }
+        return networkIOExecutor;
     }
 
-    public Executor mainThread() {
-        return mainThread;
+    public static Executor getMainThread() {
+        if(getMainThread() == null) { new AppExecutors(); }
+        return mainThreadExecutor;
     }
 
     private static class MainThreadExecutor implements Executor {
+
         private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
         @Override

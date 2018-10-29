@@ -360,7 +360,7 @@ public class MovieTO implements Parcelable{
         return new Movie(this.id, this.title, this.overview, this.releaseDate, this.posterPath, this.voteAverage);
     }
 
-    public static final List<Movie> toListModel(List<MovieTO> tos) {
+    public static List<Movie> toListModel(List<MovieTO> tos) {
          List<Movie> result = new ArrayList<>();
          for (MovieTO to : tos) {
             result.add(to.toModel());

@@ -1,61 +1,55 @@
-package com.udacity.popularmovies.net.contracts.TO;
+package com.udacity.popularmovies.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.udacity.popularmovies.models.Review;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Review implements Parcelable {
 
-public class ReviewTO implements Parcelable
-{
-
-    @SerializedName("author")
-    @Expose
     private String authorUserName;
 
-    @SerializedName("content")
-    @Expose
     private String contentReview;
 
-    @SerializedName("id")
-    @Expose
     private String id;
 
-    @SerializedName("url")
-    @Expose
     private String url;
 
-    public final static Parcelable.Creator<ReviewTO> CREATOR = new Creator<ReviewTO>() {
+    public final static Parcelable.Creator<Review> CREATOR = new Creator<Review>() {
 
 
         @SuppressWarnings({"unchecked"})
-        public ReviewTO createFromParcel(Parcel in) {
-            return new ReviewTO(in);
+        public Review createFromParcel(Parcel in) {
+            return new Review(in);
         }
 
-        public ReviewTO[] newArray(int size) {
-            return (new ReviewTO[size]);
+        public Review[] newArray(int size) {
+            return (new Review[size]);
         }
 
     }
             ;
 
-    protected ReviewTO(Parcel in) {
+    protected Review(Parcel in) {
         this.authorUserName = ((String) in.readValue((String.class.getClassLoader())));
         this.contentReview = ((String) in.readValue((String.class.getClassLoader())));
         this.id = ((String) in.readValue((String.class.getClassLoader())));
         this.url = ((String) in.readValue((String.class.getClassLoader())));
     }
 
-    public ReviewTO() {
+    public Review() {
+    }
+
+    public Review(String authorUserName
+            , String contentReview
+            , String id
+            , String url) {
+        this.authorUserName = authorUserName;
+        this.contentReview = contentReview;
+        this.id = id;
+        this.url = url;
     }
 
     public String getAuthorUserName() {
@@ -115,10 +109,10 @@ public class ReviewTO implements Parcelable
         if (other == this) {
             return true;
         }
-        if ((other instanceof ReviewTO) == false) {
+        if ((other instanceof Review) == false) {
             return false;
         }
-        ReviewTO rhs = ((ReviewTO) other);
+        Review rhs = ((Review) other);
         return new EqualsBuilder().append(id, rhs.id)
                 .append(contentReview, rhs.contentReview)
                 .append(authorUserName, rhs.authorUserName)
@@ -137,18 +131,4 @@ public class ReviewTO implements Parcelable
         return 0;
     }
 
-    public Review toModel() {
-        return new Review(this.authorUserName
-                , this.contentReview
-                , this.id
-                , this.url);
-    }
-
-    public static List<Review> toListModel(List<ReviewTO> tos) {
-        List<Review> result = new ArrayList<>();
-        for (ReviewTO to : tos) {
-            result.add(to.toModel());
-        }
-        return result;
-    }
 }

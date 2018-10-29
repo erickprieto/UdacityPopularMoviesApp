@@ -5,23 +5,17 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
+import com.squareup.otto.Subscribe;
+import com.udacity.popularmovies.PopularMoviesApplication;
+import com.udacity.popularmovies.events.DownloadDiscoveryMovieListEvent;
+import com.udacity.popularmovies.events.DownloadMovieListEvent;
 import com.udacity.popularmovies.models.Movie;
-import com.udacity.popularmovies.models.MovieServiceLanguage;
-import com.udacity.popularmovies.models.MovieServiceReleaseYear;
-import com.udacity.popularmovies.models.MovieServiceSortBy;
-import com.udacity.popularmovies.net.contracts.MovieServiceContract;
-import com.udacity.popularmovies.net.contracts.TO.MovieTO;
-import com.udacity.popularmovies.net.contracts.TO.PageResultMoviesTO;
-import com.udacity.popularmovies.utils.ProxyHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class MovieRepository implements IMovieRepository, Callback<PageResultMoviesTO> {
+public class MovieRepository implements IMovieRepository {
 
     /**
      * Name of reference to log all records of events in this class.
@@ -36,8 +30,11 @@ public class MovieRepository implements IMovieRepository, Callback<PageResultMov
 
 
     public MovieRepository() {
+        PopularMoviesApplication.getEventBus().register(this);
+
         this.moviesMutable = new MutableLiveData<List<Movie>>();
         moviesMutable.setValue(new ArrayList<Movie>());
+
     }
 
     public MovieRepository(MutableLiveData<List<Movie>> moviesMutable) {
@@ -45,58 +42,12 @@ public class MovieRepository implements IMovieRepository, Callback<PageResultMov
     }
 
 
-    /**
-     * Download from webservice list of {@link Movie}.
-     * Enqueue Asynchronous WebService to call.
-     * @param sortByOption {@link MovieServiceSortBy} enum to choose the way to sort list from
-     *                                               webservice.
-     */
-    @Deprecated
-    public void downloadDiscoverMovieList(MovieServiceSortBy sortByOption) {
-        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
-
-        Call<PageResultMoviesTO> call = api.getDiscoverMovies(
-                ProxyHelper.WEB_SERVICES_LICENSE
-                , MovieServiceLanguage.ENGLISH_US.getValue()
-                , sortByOption.getValue()
-                , false
-                , false
-                , MovieServiceReleaseYear.YEAR_2018.getValue()
-                , 1);
-        Log.v(TAG, call.request().url().toString());
-        call.enqueue(this);
+    @Override
+    protected void finalize() throws Throwable {
+        Log.v(TAG, "finalize");
+        PopularMoviesApplication.getEventBus().unregister(this);
+        super.finalize();
     }
-
-    /**
-     * Download from webservice list of Popular {@link Movie}.
-     * Enqueue Asynchronous WebService to call.
-     */
-    public void downloadPopularMovieList() {
-        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
-
-        Call<PageResultMoviesTO> call = api.getPopularMovies(
-                ProxyHelper.WEB_SERVICES_LICENSE
-                , MovieServiceLanguage.ENGLISH_US.getValue()
-                , 1);
-        Log.v(TAG, call.request().url().toString());
-        call.enqueue(this);
-    }
-
-    /**
-     * Download from webservice list of Poupular {@link Movie}.
-     * Enqueue Asynchronous WebService to call.
-     */
-    public void downloadTopRatedMovieList() {
-        MovieServiceContract api = ProxyHelper.getProxy(MovieServiceContract.class);
-
-        Call<PageResultMoviesTO> call = api.getTopRatedMovies(
-                ProxyHelper.WEB_SERVICES_LICENSE
-                , MovieServiceLanguage.ENGLISH_US.getValue()
-                , 1);
-        Log.v(TAG, call.request().url().toString());
-        call.enqueue(this);
-    }
-
 
 
     @Override
@@ -106,8 +57,6 @@ public class MovieRepository implements IMovieRepository, Callback<PageResultMov
             Log.v(TAG, "getPopularMovies: NULL ======");
             moviesMutable = new MutableLiveData<List<Movie>>();
             moviesMutable.setValue(new ArrayList<Movie>());
-            //downloadDiscoverMovieList(MovieServiceSortBy.POPULARITY_DESC);
-            //moviesMutable.setValue(movies);
         }
         return moviesMutable;
     }
@@ -122,28 +71,25 @@ public class MovieRepository implements IMovieRepository, Callback<PageResultMov
         return this.moviesMutable;
     }
 
+
+
+
+
+
     public void updatePopularMovies(List<Movie> movies) {
         this.moviesMutable.setValue(movies);
     }
 
-    @Override
-    public void onResponse(Call<PageResultMoviesTO> call, Response<PageResultMoviesTO> response) {
-        if(response.isSuccessful()) {
-            PageResultMoviesTO pageWithMoviesList = response.body();
-            Log.v(TAG, pageWithMoviesList.toString());
-
-            updatePopularMovies(MovieTO.toListModel(pageWithMoviesList.getMovies()));
-
-            //this.adapter.putMovies(this.movies);
-            Log.v(TAG, this.moviesMutable.toString());
-
-        } else {
-            Log.e(TAG, response.errorBody().toString());
-        }
+    @Subscribe
+    public void downloadedDiscoveryMovieList(DownloadDiscoveryMovieListEvent event) {
+        Log.v(TAG, "Repo D evento recibido ==============================================");
+        updatePopularMovies(event.getModelos());
     }
 
-    @Override
-    public void onFailure(Call<PageResultMoviesTO> call, Throwable t) {
-        Log.e(TAG,call.toString() + t.getMessage());
+    @Subscribe
+    public void downloadedMovieList(DownloadMovieListEvent event) {
+        Log.v(TAG, "Repo evento recibido ==============================================");
+        updatePopularMovies(event.getModelos());
+        Log.v(TAG, this.moviesMutable.toString());
     }
 }
