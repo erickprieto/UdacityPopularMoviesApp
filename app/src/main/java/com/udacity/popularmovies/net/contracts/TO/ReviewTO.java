@@ -145,6 +145,7 @@ public class ReviewTO implements Parcelable
     }
 
     public static List<Review> toListModel(List<ReviewTO> tos) {
+        if(tos == null) { return null; }
         List<Review> result = new ArrayList<>();
         for (ReviewTO to : tos) {
             result.add(to.toModel());

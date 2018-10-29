@@ -29,7 +29,7 @@ public class VideoTO implements Parcelable
     @Expose
     private String countryISOCode;
 
-    @SerializedName("resourceKey")
+    @SerializedName("key")
     @Expose
     private String resourceKey;
 
@@ -217,6 +217,7 @@ public class VideoTO implements Parcelable
     }
 
     public static List<Video> toListModel(List<VideoTO> tos) {
+        if(tos == null) { return null; }
         List<Video> result = new ArrayList<>();
         for (VideoTO to : tos) {
             result.add(to.toModel());

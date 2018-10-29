@@ -108,8 +108,8 @@ public class DetailActivity extends AppCompatActivity {
         PopularMoviesApplication.getEventBus().post(
                 new ImageDownloadedEvent(1,"a.jpg", Bitmap.createBitmap(1,1, Bitmap.Config.ALPHA_8)));
 
-        downloadReviewList();
-        downloadVideoList();
+        downloadReviewList(movieDetails.getId());
+        downloadVideoList(movieDetails.getId());
 
     }
 
@@ -117,11 +117,11 @@ public class DetailActivity extends AppCompatActivity {
      * Download from webservice list of VideoTO {@link VideoTO}.
      * Enqueue Asyncromus WebService to call.
      */
-    private void downloadVideoList() {
+    private void downloadVideoList(int movieId) {
         VideoServiceContract api = ProxyHelper.getProxy(VideoServiceContract.class);
 
         Call<PageResultVideosTO> call = api.getVideos(
-                1
+                movieId
                 , ProxyHelper.WEB_SERVICES_LICENSE
                 , MovieServiceLanguage.ENGLISH_US.getValue()
                 );
@@ -133,7 +133,7 @@ public class DetailActivity extends AppCompatActivity {
                     PageResultVideosTO page = response.body();
                     List<VideoTO> videos = page.getVideos();
                     List<Video> listaVideo = VideoTO.toListModel(videos);
-                    Log.v(TAG, listaVideo.toString());
+                    Log.v(TAG, listaVideo != null ? listaVideo.toString() : "null");
                 } else {
                     Log.e(TAG, response.errorBody().toString());
                 }
@@ -146,11 +146,11 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-    private void downloadReviewList() {
+    private void downloadReviewList(int movieId) {
         ReviewServiceContract api = ProxyHelper.getProxy(ReviewServiceContract.class);
 
         Call<PageResultReviewsTO> call = api.getReviews(
-                1
+                movieId
                 , ProxyHelper.WEB_SERVICES_LICENSE
                 , MovieServiceLanguage.ENGLISH_US.getValue()
         );
@@ -160,9 +160,9 @@ public class DetailActivity extends AppCompatActivity {
             public void onResponse(Call<PageResultReviewsTO> call, Response<PageResultReviewsTO> response) {
                 if(response.isSuccessful()) {
                     PageResultReviewsTO page = response.body();
-                    List<ReviewTO> videos = page.getReviews();
-                    List<Review> listaVideo = ReviewTO.toListModel(videos);
-                    Log.v(TAG, listaVideo.toString());
+                    List<ReviewTO> reviews = page.getReviews();
+                    List<Review> listaReview = ReviewTO.toListModel(reviews);
+                    Log.v(TAG, listaReview != null ? listaReview.toString() : "null");
                 } else {
                     Log.e(TAG, response.errorBody().toString());
                 }

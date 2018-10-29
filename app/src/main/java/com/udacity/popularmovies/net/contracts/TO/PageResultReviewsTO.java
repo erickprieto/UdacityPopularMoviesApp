@@ -22,7 +22,7 @@ public class PageResultReviewsTO implements Parcelable
     @Expose
     private Integer page;
 
-    @SerializedName("reviews")
+    @SerializedName("results")
     @Expose
     private List<ReviewTO> reviews = null;
 
