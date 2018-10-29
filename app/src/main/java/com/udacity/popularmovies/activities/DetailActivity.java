@@ -17,7 +17,12 @@ import com.udacity.popularmovies.events.ImageDownloadedEvent;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.models.MovieServiceLanguage;
+import com.udacity.popularmovies.models.Review;
+import com.udacity.popularmovies.models.Video;
+import com.udacity.popularmovies.net.contracts.ReviewServiceContract;
+import com.udacity.popularmovies.net.contracts.TO.PageResultReviewsTO;
 import com.udacity.popularmovies.net.contracts.TO.PageResultVideosTO;
+import com.udacity.popularmovies.net.contracts.TO.ReviewTO;
 import com.udacity.popularmovies.net.contracts.TO.VideoTO;
 import com.udacity.popularmovies.net.contracts.VideoServiceContract;
 import com.udacity.popularmovies.utils.ProxyHelper;
@@ -28,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +48,7 @@ import retrofit2.Response;
  * @author Erick Prieto
  * @since 2018
  */
-public class DetailActivity extends AppCompatActivity implements Callback<PageResultVideosTO> {
+public class DetailActivity extends AppCompatActivity {
 
 
     /**
@@ -101,6 +107,10 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
 
         PopularMoviesApplication.getEventBus().post(
                 new ImageDownloadedEvent(1,"a.jpg", Bitmap.createBitmap(1,1, Bitmap.Config.ALPHA_8)));
+
+        downloadReviewList();
+        downloadVideoList();
+
     }
 
     /**
@@ -111,12 +121,58 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
         VideoServiceContract api = ProxyHelper.getProxy(VideoServiceContract.class);
 
         Call<PageResultVideosTO> call = api.getVideos(
-                ProxyHelper.WEB_SERVICES_LICENSE
-                , 1
+                1
+                , ProxyHelper.WEB_SERVICES_LICENSE
                 , MovieServiceLanguage.ENGLISH_US.getValue()
                 );
         Log.v(TAG, call.request().url().toString());
-        call.enqueue(this);
+        call.enqueue(new Callback<PageResultVideosTO>() {
+            @Override
+            public void onResponse(Call<PageResultVideosTO> call, Response<PageResultVideosTO> response) {
+                if(response.isSuccessful()) {
+                    PageResultVideosTO page = response.body();
+                    List<VideoTO> videos = page.getVideos();
+                    List<Video> listaVideo = VideoTO.toListModel(videos);
+                    Log.v(TAG, listaVideo.toString());
+                } else {
+                    Log.e(TAG, response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PageResultVideosTO> call, Throwable t) {
+                Log.e(TAG,call.toString() + t.getMessage());
+            }
+        });
+    }
+
+    private void downloadReviewList() {
+        ReviewServiceContract api = ProxyHelper.getProxy(ReviewServiceContract.class);
+
+        Call<PageResultReviewsTO> call = api.getReviews(
+                1
+                , ProxyHelper.WEB_SERVICES_LICENSE
+                , MovieServiceLanguage.ENGLISH_US.getValue()
+        );
+        Log.v(TAG, call.request().url().toString());
+        call.enqueue(new Callback<PageResultReviewsTO>() {
+            @Override
+            public void onResponse(Call<PageResultReviewsTO> call, Response<PageResultReviewsTO> response) {
+                if(response.isSuccessful()) {
+                    PageResultReviewsTO page = response.body();
+                    List<ReviewTO> videos = page.getReviews();
+                    List<Review> listaVideo = ReviewTO.toListModel(videos);
+                    Log.v(TAG, listaVideo.toString());
+                } else {
+                    Log.e(TAG, response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PageResultReviewsTO> call, Throwable t) {
+                Log.e(TAG,call.toString() + t.getMessage());
+            }
+        });
     }
 
     /**
@@ -171,17 +227,6 @@ public class DetailActivity extends AppCompatActivity implements Callback<PageRe
             Log.e(TAG, pex.getMessage());
             return StringUtils.EMPTY;
         }
-
-    }
-
-
-    @Override
-    public void onResponse(Call<PageResultVideosTO> call, Response<PageResultVideosTO> response) {
-
-    }
-
-    @Override
-    public void onFailure(Call<PageResultVideosTO> call, Throwable t) {
 
     }
 

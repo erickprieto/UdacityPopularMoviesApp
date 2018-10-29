@@ -10,8 +10,8 @@ import retrofit2.http.Query;
 public interface ReviewServiceContract {
 
     @GET("movie/{idMovie}/reviews")
-    Call<PageResultReviewsTO> getReviews(@Query("api_key") String apiKey
-            , @Path("idMovie") int idMovie
+    Call<PageResultReviewsTO> getReviews(@Path("idMovie") int idMovie
+            , @Query("api_key") String apiKey
             , @Query("language") String movieServiceLanguage
     );
 }
