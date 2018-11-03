@@ -59,7 +59,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class PopularMoviesRepositoryService extends LifecycleService implements IMovieRepository {
 
     /**

@@ -28,7 +28,11 @@ import java.util.BitSet;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 @Entity(tableName = "movie")
 public class MovieEntity implements Parcelable {
 

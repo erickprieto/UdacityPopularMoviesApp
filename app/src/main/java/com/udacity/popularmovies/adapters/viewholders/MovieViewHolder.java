@@ -12,6 +12,9 @@ import com.udacity.popularmovies.models.Movie;
  * <code>MovieViewHolder</code> to build with <code>ImageView</code>,
  * that will be fill with {@link Movie#getPosterPath()}.
  * Several <code>MovieViewHolder</code> build a mosaic of {@link Movie}.
+ *
+ * @author Erick Prieto
+ * @since 2018
  */
 public class MovieViewHolder extends RecyclerView.ViewHolder{
 

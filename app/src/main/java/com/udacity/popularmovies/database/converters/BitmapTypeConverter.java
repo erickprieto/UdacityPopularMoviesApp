@@ -6,6 +6,11 @@ import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class BitmapTypeConverter {
 
     private static final int DEFAULT_OFFSET = 0;

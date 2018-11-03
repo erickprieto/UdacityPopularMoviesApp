@@ -14,6 +14,11 @@ import com.udacity.popularmovies.models.Video;
 
 import java.util.List;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class VideosAdapter extends RecyclerView.Adapter<VideoViewHolder> {
     /**
      * Name of reference to log all records of events in this class.
@@ -50,19 +55,24 @@ public class VideosAdapter extends RecyclerView.Adapter<VideoViewHolder> {
         Log.v(TAG, TAG_M + video.getName());
     }
 
+    /**
+     * Establish action for <c>onClick</c> listeners.
+     * @param video <c>Video</c> item selected.
+     * @param holder <c>code</c> holder that contains view.
+     */
     private void establishViewsListeners(final Video video, VideoViewHolder holder) {
 
         holder.getIconPlayVideoImageView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchExternalWebLink(new String []{video.buildWebYoutubeUrl(), video.buildAppYoutubeUrl()});
+                launchExternalWebLink(new String []{ video.buildWebYoutubeUrl(), video.buildAppYoutubeUrl() });
             }
         });
 
         holder.getTitleVideoTextEdit().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchExternalWebLink(new String []{video.buildWebYoutubeUrl(), video.buildAppYoutubeUrl()});
+                launchExternalWebLink(new String []{ video.buildWebYoutubeUrl(), video.buildAppYoutubeUrl() });
             }
         });
 
@@ -100,10 +110,19 @@ public class VideosAdapter extends RecyclerView.Adapter<VideoViewHolder> {
         notifyDataSetChanged();
     }
 
+    /**
+     * Solicite to {@link DetailActivity} to launch a share action of selected video.
+     * @param urls <c>String[]</c> http link and Android App protocols to launch.
+     *             first element contains http.
+     */
     private void launchExternalWebLink(String[] urls) {
         ((DetailActivity) context).startYoutube(urls);
     }
 
+    /**
+     * Solicite to {@link DetailActivity} to launch a share action of selected video.
+     * @param video <c>Video</c> info to share.
+     */
     private void launchShareWebLink(Video video) {
         ((DetailActivity) context).shareYouTubeVideoTrailer(video);
     }

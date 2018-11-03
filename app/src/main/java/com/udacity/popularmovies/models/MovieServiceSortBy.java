@@ -3,6 +3,7 @@ package com.udacity.popularmovies.models;
 /**
  * Wrap options of the API to search movies.
  * @see  <a href="https://developers.themoviedb.org/3/discover/movie-discover">API search sortby options</a>
+ *
  * @author Erick Prieto
  * @since 2018
  */

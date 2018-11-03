@@ -12,6 +12,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class FileTarget implements Target {
 
     private String url;

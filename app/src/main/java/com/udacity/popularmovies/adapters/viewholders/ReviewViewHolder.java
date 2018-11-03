@@ -12,10 +12,20 @@ import com.udacity.popularmovies.models.Review;
  * <code>ReviewViewHolder</code> to build with some <code>TextView</code>,
  * that will be fill with {@link Review#getContentReview()}.
  * Several <code>ReviewViewHolder</code> build a horizontal list of {@link Review}.
+ *
+ * @author Erick Prieto
+ * @since 2018
  */
 public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
+    /**
+     * Hold author ID name to show.
+     */
     private TextView authorReviewTextView;
+
+    /**
+     * Hold full review to show.
+     */
     private TextView titleReviewTextView;
 
     /**

@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Data sent by the request, and contains a details of Movie to show in the <code>Activity</code>.
+ *
  * @author Erick Prieto
  * @since 2018
  */

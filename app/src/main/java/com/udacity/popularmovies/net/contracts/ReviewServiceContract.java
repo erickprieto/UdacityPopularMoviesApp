@@ -7,6 +7,11 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public interface ReviewServiceContract {
 
     @GET("movie/{idMovie}/reviews")

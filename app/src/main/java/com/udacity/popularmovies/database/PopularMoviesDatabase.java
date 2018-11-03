@@ -13,7 +13,11 @@ import com.udacity.popularmovies.database.entities.FavoriteEntity;
 import com.udacity.popularmovies.database.entities.MovieEntity;
 import com.udacity.popularmovies.utils.AppExecutors;
 
-
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 @Database(entities = {MovieEntity.class, FavoriteEntity.class}, version = 1, exportSchema = false)
 public abstract class PopularMoviesDatabase extends RoomDatabase {
 

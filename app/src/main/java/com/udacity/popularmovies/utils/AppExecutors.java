@@ -27,6 +27,9 @@ import java.util.concurrent.Executors;
  * <p>
  * Grouping tasks like this avoids the effects of task starvation (e.g. disk reads don't wait behind
  * webservice requests).
+ *
+ * @author Erick Prieto
+ * @since 2018
  */
 public class AppExecutors {
 

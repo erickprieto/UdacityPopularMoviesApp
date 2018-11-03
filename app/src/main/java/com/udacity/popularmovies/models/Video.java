@@ -7,6 +7,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class Video implements Parcelable {
 
     public static final Parcelable.Creator<Video> CREATOR = new Creator<Video>() {

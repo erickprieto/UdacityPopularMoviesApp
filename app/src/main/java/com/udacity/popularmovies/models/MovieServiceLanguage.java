@@ -10,6 +10,7 @@ package com.udacity.popularmovies.models;
  *     <li>default: en-US</li>
  * </p>
  * @see  <a href="https://developers.themoviedb.org/3/discover/movie-discover">API search value options</a>
+ *
  * @author Erick Prieto
  * @since 2018
  */

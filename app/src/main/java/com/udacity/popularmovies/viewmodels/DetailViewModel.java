@@ -7,7 +7,12 @@ import android.util.Log;
 import com.udacity.popularmovies.models.Movie;
 
 
-
+/**
+ * Used to hold {@link Movie} from {@link com.udacity.popularmovies.activities.DetailActivity}.
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class DetailViewModel extends ViewModel {
 
     /**
@@ -20,6 +25,9 @@ public class DetailViewModel extends ViewModel {
      */
     private Movie movieDetails;
 
+    /**
+     * Default constructor.
+     */
     public DetailViewModel() {
         super();
     }

@@ -13,6 +13,11 @@ import com.udacity.popularmovies.database.entities.MovieEntity;
 
 import java.util.List;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 @Dao
 public interface MovieDao {
 

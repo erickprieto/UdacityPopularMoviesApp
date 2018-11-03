@@ -1,7 +1,11 @@
 package com.udacity.popularmovies.utils;
 
 
-
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class UrlValidator {
 
     public static final String PREFIX_HTTP = "http://";

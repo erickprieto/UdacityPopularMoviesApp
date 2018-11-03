@@ -12,17 +12,28 @@ import com.udacity.popularmovies.activities.DetailActivity;
 import com.udacity.popularmovies.adapters.viewholders.ReviewViewHolder;
 import com.udacity.popularmovies.models.Review;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
+
     /**
      * Name of reference to log all records of events in this class.
      */
     private static final String TAG = ReviewsAdapter.class.getSimpleName();
 
+    /**
+     * Hold a copy of data to show on {@link android.support.v7.widget.RecyclerView.ViewHolder}.
+     */
     private List<Review> reviewList;
 
+    /**
+     * Activity {@link DetailActivity} that contains this.
+     */
     private Context context;
 
     public ReviewsAdapter(List<Review> reviews, Context context) {
@@ -53,6 +64,11 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
         Log.v(TAG, TAG_M + review.getAuthorUserName() + " - " + review.getUrl());
     }
 
+    /**
+     * Establish action for <c>onClick</c> listeners.
+     * @param review <c>Review</c> item selected.
+     * @param holder <c>code</c> holder that contains view.
+     */
     private void establishViewsListeners(final Review review, ReviewViewHolder holder) {
 
         holder.getAuthorReviewTextView().setOnClickListener(new View.OnClickListener() {
@@ -89,6 +105,10 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
         notifyDataSetChanged();
     }
 
+    /**
+     * Solicite to {@link DetailActivity} open on external web selected review.
+     * @param url <c>String</c> http link.
+     */
     private void launchExternalWebLink(String url) {
         ((DetailActivity) context).startWebView(url);
     }

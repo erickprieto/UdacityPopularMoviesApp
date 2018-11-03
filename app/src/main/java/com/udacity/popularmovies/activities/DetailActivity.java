@@ -39,7 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -52,7 +51,6 @@ import java.util.List;
  */
 public class DetailActivity extends AppCompatActivity {
 
-
     /**
      * Name of reference to log all records of events in this class.
      */
@@ -64,6 +62,9 @@ public class DetailActivity extends AppCompatActivity {
      */
     public static final String ID_EXTRA_MOVIE_DETAIL = "movieDetails";
 
+    /**
+     * Key to identify <c>Movie</c> contained on <c>Bundle</c>.
+     */
     public static final String KEY_DETAILS_MOVIE = "DetailsMovie";
 
     /**
@@ -71,14 +72,29 @@ public class DetailActivity extends AppCompatActivity {
      */
     private static final String VOTE_AVERAGE_FORMAT = "%s/10";
 
-
+    /**
+     * Media type to define Share Content on <c>Intent</c>
+     */
     private static final String SHARING_URL_TYPE = "text/plain";
 
-
+    /**
+     * This Activity
+     */
     private Context context;
 
+    /**
+     * {@link DetailViewModel} to hold <c>Movie</c> in this <c>Activity</c>
+     */
     private DetailViewModel detailViewModel;
+
+    /**
+     * Adapter to display <c>List Video</c>
+     */
     private VideosAdapter videosAdapter;
+
+    /**
+     * Adapter to display <c>List Review</c>
+     */
     private ReviewsAdapter reviewsAdapter;
 
 
@@ -107,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.detailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
         if (!getIntent().hasExtra(ID_EXTRA_MOVIE_DETAIL)) {
-            Log.wtf(TAG, "No data received.");
+            Log.wtf(TAG, "No data received on Intent.");
             finish();
         }
 
@@ -120,8 +136,6 @@ public class DetailActivity extends AppCompatActivity {
         Log.v(TAG, this.detailViewModel.getMovieDetails().toString());
 
         fillViews();
-
-
 
     }
 
@@ -177,40 +191,50 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Establish the <c>Adapter</c> and initialize <c>RecyclerView</c>
+     * to display <c>Video</c> and <c>Review</c>.
+     */
     private void prepareAdaptersAndRecyclerViews() {
         final String TAG_M = "prepareAdaptersAndRecyclerViews() ";
         Log.v(TAG, TAG_M + this.detailViewModel.getMovieDetails().toString());
 
-        if(this.detailViewModel.getMovieDetails().getVideos() == null) {
-            this.detailViewModel.getMovieDetails().setVideos(new ArrayList<Video>());
-        }
-        if (this.detailViewModel.getMovieDetails().getReviews() == null) {
-            this.detailViewModel.getMovieDetails().setReviews(new ArrayList<Review>());
-        }
-        videosAdapter  = new VideosAdapter(this.detailViewModel.getMovieDetails().getVideos(), this.context);
-        reviewsAdapter = new ReviewsAdapter(this.detailViewModel.getMovieDetails().getReviews(), this.context);
+        //New List to avoid cross references on Movie Lists objects.
+        videosAdapter  = new VideosAdapter(new ArrayList<Video>(), this.context);
+        reviewsAdapter = new ReviewsAdapter(new ArrayList<Review>(), this.context);
+
         getVideosRecyclerView().setLayoutManager(new LinearLayoutManager(this.context, RecyclerView.VERTICAL, false));
         getReviewsRecyclerView().setLayoutManager(new LinearLayoutManager(this.context, RecyclerView.HORIZONTAL, false));
+        getVideosRecyclerView().setAdapter(videosAdapter);
+        getReviewsRecyclerView().setAdapter(reviewsAdapter);
 
         refreshVideosAdapter();
         refreshReviewsList();
-        Log.v(TAG, TAG_M + this.detailViewModel.getMovieDetails().toString());
+
     }
 
+    /**
+     * Update {@link DetailActivity#videosAdapter}.
+     */
     private void refreshVideosAdapter() {
         final String TAG_M = "refreshVideosAdapter() ";
-        videosAdapter.putVideos(this.detailViewModel.getMovieDetails().getVideos());
-        getVideosRecyclerView().setAdapter(videosAdapter);
         Log.v(TAG, TAG_M + this.detailViewModel.getMovieDetails().getVideos().toString());
+        videosAdapter.putVideos(this.detailViewModel.getMovieDetails().getVideos());
     }
 
+    /**
+     * Update {@link DetailActivity#reviewsAdapter}.
+     */
     private void refreshReviewsList() {
         final String TAG_M = "refreshReviewsList() ";
-        reviewsAdapter.putReviews(this.detailViewModel.getMovieDetails().getReviews());
-        getReviewsRecyclerView().setAdapter(reviewsAdapter);
         Log.v(TAG, TAG_M + this.detailViewModel.getMovieDetails().getReviews().toString());
+        reviewsAdapter.putReviews(this.detailViewModel.getMovieDetails().getReviews());
     }
 
+    /**
+     * Send a request to {@link com.udacity.popularmovies.services.PopularMoviesRepositoryService}
+     * to check as favorite {@link DetailViewModel#movieDetails}.
+     */
     private void toogleFavoriteButton() {
         if(detailViewModel.getMovieDetails().isFavorite()) {
             detailViewModel.getMovieDetails().setFavorite(false);
@@ -226,6 +250,10 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Establish Favorite <c>Button</c> status.
+     * @return <c>boolean</c> true if its favorite.
+     */
     private boolean establishFavoriteButton() {
 
         if(!this.detailViewModel.getMovieDetails().isFavorite()) {
@@ -271,6 +299,11 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Receive confirmation from {@link com.udacity.popularmovies.services.PopularMoviesRepositoryService}
+     * about of request to check as favorite {@link DetailViewModel#movieDetails}
+     * @param event Contains <c>boolean</c> with the status of favorite.
+     */
     @Subscribe
     public void establishFavoriteMovie(EstablishedMovieFavoriteEvent event) {
         Log.v(TAG, "EstablishedMovieFavoriteEvent received");
@@ -282,9 +315,13 @@ public class DetailActivity extends AppCompatActivity {
                 , a ? "Favorite Movie Added" : "Favorite Movie Removed"
                 , Toast.LENGTH_SHORT)
                 .show();
-
     }
 
+    /**
+     * Receive an updated List <c>Video</c>
+     * from {@link com.udacity.popularmovies.services.PopularMoviesRepositoryService}.
+     * @param event Contains List <c>Video</c>
+     */
     @Subscribe
     public void getVideoList(DownloadedVideoListEvent event) {
         Log.v(TAG, "DownloadedVideoListEvent received");
@@ -292,6 +329,11 @@ public class DetailActivity extends AppCompatActivity {
         refreshVideosAdapter();
     }
 
+    /**
+     * Receive an updated List <c>Review</c>
+     * from {@link com.udacity.popularmovies.services.PopularMoviesRepositoryService}.
+     * @param event Contains List <c>Review</c>
+     */
     @Subscribe
     public void getReviewList(DownloadedReviewListEvent event) {
         Log.v(TAG, "DownloadedReviewListEvent received");
@@ -299,10 +341,24 @@ public class DetailActivity extends AppCompatActivity {
         refreshReviewsList();
     }
 
+    /**
+     * Request open <a href="http://www.youtube.com">Youtube</a> Video from {@param urls},
+     * index 0 was builded from {@link Video#buildWebYoutubeUrl()}
+     * and index 1 was builded from {@link Video#buildAppYoutubeUrl()}.
+     * <p>
+     *     They was builded using {@link Video#YOUTUBE_BASE_URL} and {@link Video#YOUTUBE_APP_URL}.
+     * </p>
+     * @param urls <c>String</c> urls
+     */
     public void startYoutube(String[] urls) {
         startWebView(urls[0]);
     }
 
+    /**
+     * Request open a Webpage from {@param url}.
+     * Uses {@link UrlValidator#validate(String)} only to check if protocol was define.
+     * @param url <c>String</c> Address to open.
+     */
     public void startWebView(String url){
         final String TAG_M = "startWebView() ";
         Log.v(TAG, TAG_M + url);
@@ -310,6 +366,11 @@ public class DetailActivity extends AppCompatActivity {
         startActivity(webIntent);
     }
 
+    /**
+     * Request to Android show to user options to share a
+     * <a href="http://www.youtube.com">Youtube</a> <c>Video</c> on social media connectors.
+     * @param video Title and url ready to share.
+     */
     public void shareYouTubeVideoTrailer(Video video) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType(SHARING_URL_TYPE);

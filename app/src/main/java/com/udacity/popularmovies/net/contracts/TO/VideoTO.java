@@ -14,6 +14,11 @@ import com.udacity.popularmovies.models.Video;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class VideoTO implements ModelTO, Parcelable
 {
 

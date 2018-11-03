@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Adapter to fill <code>RecyclerView</code>
+ *
  * @author Erick Prieto
  * @since 2018
  */

@@ -10,6 +10,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ * @param <S>
+ * @param <T>
+ */
 public abstract class CallbackRetrofitPopularMovies<S extends ModelPageTO, T extends ModelTO> implements Callback<S> {
 
     /**

@@ -14,6 +14,10 @@ import java.util.List;
 
 
 /**
+ * Used to hold {@link List} of {@link Movie}
+ * from {@link com.udacity.popularmovies.activities.MainActivity}.
+ * Holds {@link MutableLiveData} of database querys to display automatically on
+ * {@link com.udacity.popularmovies.activities.MainActivity}.
  *
  * @author Erick Prieto
  * @since 2018
@@ -28,18 +32,53 @@ public class MainViewModel extends ViewModel {
     /**
      * List of {@link Movie} from WebService or <code>Bundle</code>.
      */
-    public MutableLiveData<List<Movie>> moviesPopularMutable;
-    public MutableLiveData<List<Movie>> moviesTopRatedMutable;
-    public MutableLiveData<List<Movie>> moviesFavoritesMutable;
+    private MutableLiveData<List<Movie>> moviesPopularMutable;
+    private MutableLiveData<List<Movie>> moviesTopRatedMutable;
+    private MutableLiveData<List<Movie>> moviesFavoritesMutable;
 
 
-    public List<Movie> movies = new ArrayList<>();
+    private List<Movie> movies = new ArrayList<>();
 
 
+    /**
+     * Default constructor.
+     */
     public MainViewModel() {
         super();
         PopularMoviesApplication.getEventBus().register(this);
 
+    }
+
+    public MutableLiveData<List<Movie>> getMoviesPopularMutable() {
+        return moviesPopularMutable;
+    }
+
+    public void setMoviesPopularMutable(MutableLiveData<List<Movie>> moviesPopularMutable) {
+        this.moviesPopularMutable = moviesPopularMutable;
+    }
+
+    public MutableLiveData<List<Movie>> getMoviesTopRatedMutable() {
+        return moviesTopRatedMutable;
+    }
+
+    public void setMoviesTopRatedMutable(MutableLiveData<List<Movie>> moviesTopRatedMutable) {
+        this.moviesTopRatedMutable = moviesTopRatedMutable;
+    }
+
+    public MutableLiveData<List<Movie>> getMoviesFavoritesMutable() {
+        return moviesFavoritesMutable;
+    }
+
+    public void setMoviesFavoritesMutable(MutableLiveData<List<Movie>> moviesFavoritesMutable) {
+        this.moviesFavoritesMutable = moviesFavoritesMutable;
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
     @Override

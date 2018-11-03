@@ -13,12 +13,30 @@ import com.udacity.popularmovies.models.Video;
  * <code>VideoViewHolder</code> to build with many <code>View</code>,
  * that will be fill with {@link Video#getName()}.
  * Several <code>VideoViewHolder</code> build a vertical list of {@link Video}.
+ *
+ * @author Erick Prieto
+ * @since 2018
  */
 public class VideoViewHolder extends RecyclerView.ViewHolder {
 
+    /**
+     * Hold icon of action to play.
+     */
     private ImageView iconPlayVideoImageView;
+
+    /**
+     * Hold icon of movie to show.
+     */
     private ImageView iconMovieVideoImageView;
+
+    /**
+     * Hold title video name to show.
+     */
     private TextView titleVideoTextEdit;
+
+    /**
+     * Hold icon of action to share.
+     */
     private ImageView iconShareVideoImageView;
 
     /**
@@ -26,8 +44,8 @@ public class VideoViewHolder extends RecyclerView.ViewHolder {
      * @param itemView {@link View} parent of elements to show on {@link VideosAdapter}.
      */
     public VideoViewHolder(View itemView) {
-
         super(itemView);
+
         iconPlayVideoImageView = (ImageView) itemView.findViewById(R.id.videoViewHolder_playMovieIconImageView);
         iconMovieVideoImageView = (ImageView) itemView.findViewById(R.id.videoViewHolder_movieIconImageView);
         iconShareVideoImageView = (ImageView) itemView.findViewById(R.id.videoViewHolder_shareIconImageView);
@@ -36,7 +54,6 @@ public class VideoViewHolder extends RecyclerView.ViewHolder {
     }
 
     public TextView getTitleVideoTextEdit() {
-
         return titleVideoTextEdit;
     }
 

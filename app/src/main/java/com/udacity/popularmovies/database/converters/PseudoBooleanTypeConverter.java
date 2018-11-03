@@ -2,6 +2,11 @@ package com.udacity.popularmovies.database.converters;
 
 import android.arch.persistence.room.TypeConverter;
 
+/**
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
 public class PseudoBooleanTypeConverter {
 
     @TypeConverter

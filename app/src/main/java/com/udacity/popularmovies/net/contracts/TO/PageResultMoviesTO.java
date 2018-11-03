@@ -23,6 +23,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * JSON object {@link PageResultMoviesTO} that contains
  * a List of {@link com.udacity.popularmovies.models.Movie}.
  * </p>
+ *
  * @author Erick Prieto
  * @since 2018
  */
