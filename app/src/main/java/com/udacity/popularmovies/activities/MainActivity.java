@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Obtain Adapter
-     * @return
+     * @return <c>MoviesAdapter</c>
      */
     public MoviesAdapter getAdapter() {
         return adapter;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * EStablish Adapter to show {@link Movie}
-     * @param adapter
+     * @param adapter adapter will be establish.
      */
     public void setAdapter(MoviesAdapter adapter) {
         this.adapter = adapter;
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
      * Define the columns in the {@link android.support.v7.widget.GridLayout}.
      * 2 Columns if {@link Configuration#ORIENTATION_PORTRAIT} or 3 columns if
      * {@link Configuration#ORIENTATION_PORTRAIT}.
-     * @return
+     * @return <c>GridLayoutManager</c> configurated for vertical or horizontal position.
      */
     @NonNull
     private GridLayoutManager getGridLayoutManager() {
@@ -235,19 +235,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        try{
+            if (connectedService && pmService != null) {
+                unbindService(conn);
+            }
+            } catch (IllegalArgumentException iae) {
+                Log.e(TAG, iae.getMessage());
+        }
         PopularMoviesApplication.getEventBus().register(this);
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        try{
-            if (connectedService && pmService != null) {
-                unbindService(conn);
-            }
-        } catch (IllegalArgumentException iae) {
-            Log.e(TAG, iae.getMessage());
-        }
         super.onStop();
     }
 

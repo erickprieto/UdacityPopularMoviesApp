@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Contains Review information from webservice.
+ * Contained on {@link PageResultReviewsTO}.
  *
  * @author Erick Prieto
  * @since 2018

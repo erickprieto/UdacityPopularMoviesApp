@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
+ * Define a new {@link Target} to use on {@link Picasso} picture download manager.
  *
  * @author Erick Prieto
  * @since 2018

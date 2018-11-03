@@ -12,13 +12,15 @@ import retrofit2.http.Query;
  * <a href="https://api.themoviedb.org/3">https://api.themoviedb.org/3/</a>
  * <p>
  * These Endpoints download a JSON object {@link PageResultMoviesTO} that contains
- * a List of {@link com.udacity.popularmovies.models.Movie}.
+ * a List of {@link com.udacity.popularmovies.net.contracts.TO.MovieTO}.
  * Example of:
  * {@link MovieServiceContract#getDiscoverMovies(String, String, String, boolean, boolean, int, int)}
  * requests the endpoint: https://api.themoviedb.org/3/discover/movie
  * ?api_key=API_KEY&language=en-US&sort_by=popularity.desc
  * &include_adult=false&include_video=false&page=1
  * </p>
+ * <p>See <a href="https://developers.themoviedb.org/3/getting-started/introduction">API</a></p>.
+ *
  * @author Erick Prieto
  * @since 2018
  */
@@ -45,7 +47,7 @@ public interface MovieServiceContract {
      *             <li>maximum: 1000</li>
      *             <li>default: 1</li>
      * @return <code>PageResultMoviesTO</code> details of response with inside a List of
-     * {@link com.udacity.popularmovies.models.Movie}
+     * {@link com.udacity.popularmovies.net.contracts.TO.MovieTO}
      */
     @GET("discover/movie")
     Call<PageResultMoviesTO> getDiscoverMovies(@Query("api_key") String apiKey
@@ -68,7 +70,7 @@ public interface MovieServiceContract {
      *             <li>maximum: 1000</li>
      *             <li>default: 1</li>
      * @return <code>PageResultMoviesTO</code> details of response with inside a List of
-     * {@link com.udacity.popularmovies.models.Movie}
+     * {@link com.udacity.popularmovies.net.contracts.TO.MovieTO}
      */
     @GET("movie/popular")
     Call<PageResultMoviesTO> getPopularMovies(@Query("api_key") String apiKey
@@ -87,7 +89,7 @@ public interface MovieServiceContract {
      *             <li>maximum: 1000</li>
      *             <li>default: 1</li>
      * @return <code>PageResultMoviesTO</code> details of response with inside a List of
-     * {@link com.udacity.popularmovies.models.Movie}
+     * {@link com.udacity.popularmovies.net.contracts.TO.MovieTO}
      */
     @GET("movie/top_rated")
     Call<PageResultMoviesTO> getTopRatedMovies(@Query("api_key") String apiKey

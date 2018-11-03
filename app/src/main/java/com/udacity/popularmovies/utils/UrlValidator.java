@@ -2,18 +2,32 @@ package com.udacity.popularmovies.utils;
 
 
 /**
+ * Validate if its defined a HTTP or HTTPS valid address.
+ * This class only provide utilitary methods.
  *
  * @author Erick Prieto
  * @since 2018
  */
 public class UrlValidator {
 
-    public static final String PREFIX_HTTP = "http://";
-    public static final String PREFIX_HTTPS = "https://";
+    private static final String PREFIX_HTTP = "http://";
+    private static final String PREFIX_HTTPS = "https://";
 
+    /**
+     * Only static methods allowed.
+     */
     private UrlValidator() {
     }
 
+    /**
+     * Validate if this {@param url} begins with {@link UrlValidator#PREFIX_HTTP}
+     * or {@link UrlValidator#PREFIX_HTTPS}.
+     * if its not complete, this method complete web address.
+     * It does not validate if its a valid {@link java.net.URL}
+     *
+     * @param url <c>String</c> url parsed.
+     * @return <c>String</c> Complete URL.
+     */
     public static String validate(String url) {
 
         if (!url.startsWith(PREFIX_HTTP) && !url.startsWith(PREFIX_HTTPS)) {

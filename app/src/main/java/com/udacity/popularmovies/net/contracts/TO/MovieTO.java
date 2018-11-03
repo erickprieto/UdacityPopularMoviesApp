@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data sent by the request, and contains a details of MovieTO to show in the <code>Activity</code>.
+ * Contains Movie information from webservice.
+ * Contained on {@link PageResultMoviesTO}.
  *
  * @author Erick Prieto
  * @since 2018

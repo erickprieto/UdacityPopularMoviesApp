@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Contains Video information from webservice.
+ * Contained on {@link PageResultVideosTO}.
  *
  * @author Erick Prieto
  * @since 2018

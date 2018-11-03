@@ -60,6 +60,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
+ * Repository implementation to handle all background task, related to fetch information from
+ * REST webservice and save them on persistence system. This Repository implements Retrofit and Room
+ * to make those tasks.
  *
  * @author Erick Prieto
  * @since 2018
@@ -71,6 +74,9 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
      */
     private static final String TAG = PopularMoviesRepositoryService.class.getSimpleName();
 
+    /**
+     * Number of page to receive from webservices.
+     */
     private static final int PAGE_NUMBER = 1;
 
     private final IBinder binder = new PopularMoviesRepositoryServiceBinder();
@@ -78,7 +84,14 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
     private Executor threadDbTaskExecutor = AppExecutors.getDiskIO();
     private Executor threadNetworkTaskExecutor = AppExecutors.getNetworkIO();
 
+    /**
+     * {@link android.arch.persistence.room.RoomDatabase} reference.
+     */
     private PopularMoviesDatabase db;
+
+    /**
+     * This {@link PopularMoviesRepositoryService}.
+     */
     private Context context = this;
 
     private MovieEntity[] movieEntitiesArray;

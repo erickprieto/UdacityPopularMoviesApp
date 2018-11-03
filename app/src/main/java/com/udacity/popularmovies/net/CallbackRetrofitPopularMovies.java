@@ -11,6 +11,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
+ * Wrap Callbacks of Retrofit calls.
  *
  * @author Erick Prieto
  * @since 2018

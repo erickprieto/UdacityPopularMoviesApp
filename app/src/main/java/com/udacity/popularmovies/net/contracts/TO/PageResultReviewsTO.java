@@ -12,7 +12,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
- *
+ * Model of Response data obtained from endpoint:
+ * <code>https://api.themoviedb.org/3/discover/movie</code>
+ * Endpoint example: https://api.themoviedb.org/3/movie/{movie_id}/reviews?
+ * api_key=API_KEY&language=en-US&page=1
+ * <p>
+ * JSON object {@link PageResultReviewsTO} that contains
+ * a List of {@link ReviewTO}.
+ * </p>
  * @author Erick Prieto
  * @since 2018
  */

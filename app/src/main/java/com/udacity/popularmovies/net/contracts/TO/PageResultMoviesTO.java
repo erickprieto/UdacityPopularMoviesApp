@@ -16,12 +16,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * Model of Response data obtained from endpoint:
  * <code>https://api.themoviedb.org/3/discover/movie</code>
- * Endpoint example: https://api.themoviedb.org/3/discover/movie
- *   ?api_key=API_KEY&language=en-US&sort_by=popularity.desc
+ * Endpoint example: https://api.themoviedb.org/3/discover/movie?
+ *   api_key=API_KEY&language=en-US&sort_by=popularity.desc
  *   &include_adult=false&include_video=false&page=1
  * <p>
  * JSON object {@link PageResultMoviesTO} that contains
- * a List of {@link com.udacity.popularmovies.models.Movie}.
+ * a List of {@link MovieTO}.
  * </p>
  *
  * @author Erick Prieto
