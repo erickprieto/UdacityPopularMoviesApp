@@ -24,6 +24,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.List;
 
@@ -71,6 +72,10 @@ public class MovieEntity implements Parcelable {
     @TypeConverters({PseudoBooleanTypeConverter.class})
     private int popular;
 
+    @ColumnInfo(name = "favorite", typeAffinity = ColumnInfo.INTEGER)
+    @TypeConverters({PseudoBooleanTypeConverter.class})
+    private int favorite;
+
     @ColumnInfo(name = "created", typeAffinity = ColumnInfo.INTEGER)
     @TypeConverters({DateTypeConverter.class})
     private Date created;
@@ -87,6 +92,7 @@ public class MovieEntity implements Parcelable {
             , String posterFileName
             , Bitmap poster
             , int popular
+            , int favorite
             , Date created) {
         this.id = id;
         this.title = title;
@@ -96,6 +102,7 @@ public class MovieEntity implements Parcelable {
         this.posterFileName = posterFileName;
         this.poster = poster;
         this.popular = popular;
+        this.favorite = favorite;
         this.created = created;
     }
 
@@ -104,7 +111,15 @@ public class MovieEntity implements Parcelable {
         this.id = in.readInt();
         this.title = in.readString();
         this.overview = in.readString();
-        this.releaseDate = (Date) in.readValue(Date.class.getClassLoader());
+        this.releaseDate = (Date)in.readValue(Date.class.getClassLoader());
+
+        this.rating = in.readDouble();
+        this.posterFileName = in.readString();
+        BitmapTypeConverter bc = new BitmapTypeConverter();
+        this.poster = bc.toBitmap(in.createByteArray());
+        this.popular = in.readInt();
+        this.favorite = in.readInt();
+        this.created = (Date)in.readValue(Date.class.getClassLoader());
     }
 
 
@@ -173,6 +188,14 @@ public class MovieEntity implements Parcelable {
         this.popular = popular;
     }
 
+    public int getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
+    }
+
     public Date getCreated() {
         return created;
     }
@@ -236,6 +259,7 @@ public class MovieEntity implements Parcelable {
         return 0;
     }
 
+
     @Ignore
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -243,18 +267,28 @@ public class MovieEntity implements Parcelable {
         dest.writeString(title);
         dest.writeString(overview);
         dest.writeValue(releaseDate);
+        dest.writeDouble(rating);
+        dest.writeString(posterFileName);
+        BitmapTypeConverter bc = new BitmapTypeConverter();
+        dest.writeByteArray(bc.toByteArray(poster));
+        dest.writeInt(popular);
+        dest.writeInt(favorite);
+        dest.writeValue(created);
     }
 
     @Ignore
     public Movie toModel() {
         SimpleDateFormat sdf = new SimpleDateFormat(Movie.DATE_FORMAT);
 
-        return new Movie(this.id
+        Movie movie = new Movie(this.id
                 , this.title
                 , this.overview
                 , sdf.format(this.releaseDate)
                 , this.posterFileName
                 , this.rating);
+        movie.setPosterImage(this.poster);
+        movie.setFavorite(this.favorite == 1 ? true : false);
+        return movie;
     }
 
     @Ignore
@@ -276,8 +310,9 @@ public class MovieEntity implements Parcelable {
                 , sdf.parse(model.getReleaseDate(),new ParsePosition(0))
                 , model.getVoteAverage()
                 , model.getPosterPath()
-                , null
+                , model.getPosterImage()
                 , popular == true ? 1 : 0
+                , model.isFavorite() ? 1 : 0
                 , new Date(System.currentTimeMillis()));
     }
 

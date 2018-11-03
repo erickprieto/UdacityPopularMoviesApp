@@ -26,7 +26,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author Erick Prieto
  * @since 2018
  */
-public class PageResultMoviesTO implements Parcelable
+public class PageResultMoviesTO implements ModelPageTO, Parcelable
 {
 
     @SerializedName("page")

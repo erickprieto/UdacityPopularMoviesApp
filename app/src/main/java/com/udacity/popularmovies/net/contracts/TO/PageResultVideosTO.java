@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class PageResultVideosTO implements Parcelable
+public class PageResultVideosTO implements ModelPageTO, Parcelable
 {
 
     @SerializedName("id")
@@ -60,6 +60,7 @@ public class PageResultVideosTO implements Parcelable
     public void setVideos(List<VideoTO> videos) {
         this.videos = videos;
     }
+
 
     @Override
     public String toString() {

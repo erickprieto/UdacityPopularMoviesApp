@@ -35,8 +35,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -74,20 +73,20 @@
 
 
                     <TextView
-                            android:id="@+id/detailActivity_voteAverageTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="@string/a"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
-
-                    <ToggleButton
-                        android:id="@+id/detailActivity_favoriteButton"
+                        android:id="@+id/detailActivity_voteAverageTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:text="@string/a"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle" />
+
+                    <ToggleButton
+                        android:id="@+id/detailActivity_favoriteButton"
                         style="@style/toggleButton"
-                        android:background="@drawable/ic_toggle_bg" />
+                        android:layout_width="@android:dimen/app_icon_size"
+                        android:layout_height="@android:dimen/app_icon_size"
+                        android:background="@drawable/ic_toggle_bg"
+                        android:gravity="center" />
 
                 </LinearLayout>
 
@@ -105,19 +104,37 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/default_gap"
                 android:layout_weight="1"
-                android:gravity="left"
+                android:gravity="start"
                 android:padding="@dimen/default_gap"
                 android:text="@string/a"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-            <RatingBar
-                android:id="@+id/detailActivity_voteRatingBar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                />
+                android:orientation="vertical">
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/detailActivity_videosRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1" />
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/detailActivity_reviewsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
         </LinearLayout>
+
+
     </ScrollView>
 
 

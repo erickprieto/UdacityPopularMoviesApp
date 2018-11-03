@@ -1,6 +1,6 @@
 package com.udacity.popularmovies.activities;
 
-import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -9,7 +9,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,11 +17,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.squareup.otto.Subscribe;
+import com.udacity.popularmovies.PopularMoviesApplication;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapters.MoviesAdapter;
+import com.udacity.popularmovies.events.FetchNewMovieListErrorEvent;
+import com.udacity.popularmovies.events.FetchededNewMovieListEvent;
 import com.udacity.popularmovies.models.Movie;
-import com.udacity.popularmovies.models.MovieServiceSortBy;
-import com.udacity.popularmovies.services.PopularMoviesDatabaseService;
+import com.udacity.popularmovies.services.PopularMoviesRepositoryService;
 import com.udacity.popularmovies.viewmodels.MainViewModel;
 
 import java.util.List;
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
-     * Identifier to serialize {@link MainViewModel#getMovies()}
+     * Identifier to serialize {@link MainViewModel#movies}
      */
     public static final String ID_SERIAL_MOVIES_LIST = "moviesList";
 
@@ -55,31 +57,20 @@ public class MainActivity extends AppCompatActivity {
      */
     private MoviesAdapter adapter;
 
+    private byte screen = 1;
+
     private Intent intentService;
-    private PopularMoviesDatabaseService pmService;
+    private PopularMoviesRepositoryService pmService;
     private boolean connectedService;
     private PopularMoviesServiceConnection conn = new PopularMoviesServiceConnection();
 
-    public class PopularMoviesServiceConnection implements ServiceConnection{
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            pmService= ((PopularMoviesDatabaseService.PopularMoviesDatabaseServiceBinder) service).getService();
-            connectedService = true;
-            firstScreen();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            pmService = null;
-            connectedService = false;
-        }
-    }
 
     //To assign Views
     private RecyclerView getMoviesRecyclerView() {
         return (RecyclerView) findViewById(R.id.mainActivity_movieRecyclerView);
     }
+
     private SwipeRefreshLayout getSwipeRefreshLayout() {
         return (SwipeRefreshLayout) findViewById(R.id.mainActivity_swipeRefreshtLayout);
     }
@@ -96,39 +87,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        intentService = new Intent(this, PopularMoviesDatabaseService.class);
+        intentService = new Intent(this, PopularMoviesRepositoryService.class);
+
         if(!connectedService) {
             bindService(intentService, conn, BIND_AUTO_CREATE);
         }
+
         setContentView(R.layout.activity_main);
 
         this.mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
-        this.mainViewModel.movieRepo.getPopularMovies().observe(this, new Observer<List<Movie>>() {
-
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                adapter.putMovies(movies);
-            }
-        });
 
 
         getSwipeRefreshLayout().setRefreshing(true);
         getSwipeRefreshLayout().setColorSchemeResources(R.color.colorPrimary);
         getSwipeRefreshLayout().setProgressBackgroundColorSchemeResource(R.color.colorAccent);
+
         getSwipeRefreshLayout().setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pmService.downloadPopularMovieList();
-                getSwipeRefreshLayout().setRefreshing(false);
+                final String TAG_M = "onRefresh() ";
+                Log.v(TAG, TAG_M);
+                if (screen == 1) {
+                    pmService.fetchPopularMovieList();
+                } else if (screen == 2) {
+                    pmService.fetchTopRatedMovieList();
+                } else if (screen == 3) {
+                    adapter.putMovies(mainViewModel.moviesFavoritesMutable.getValue());
+                    getSwipeRefreshLayout().setRefreshing(false);
+                }
             }
         });
 
-
-
         getMoviesRecyclerView().setLayoutManager(getGridLayoutManager());
-        assignMoviesViews();
-
+        assignAdapterViews();
     }
 
     /**
@@ -165,13 +157,25 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuitem_sortby_popular:
-                this.pmService.downloadPopularMovieList();
+                getSwipeRefreshLayout().setRefreshing(true);
+                adapter.putMovies(mainViewModel.moviesPopularMutable.getValue());
+                getMoviesRecyclerView().scrollToPosition(0);
+                getSwipeRefreshLayout().setRefreshing(false);
+                this.screen = 1;
                 return true;
             case R.id.menuitem_sortby_rated:
-                this.pmService.downloadTopRatedMovieList();
+                getSwipeRefreshLayout().setRefreshing(true);
+                adapter.putMovies(mainViewModel.moviesTopRatedMutable.getValue());
+                getMoviesRecyclerView().scrollToPosition(0);
+                getSwipeRefreshLayout().setRefreshing(false);
+                this.screen = 2;
                 return true;
             case R.id.menuitem_favorites:
-                this.pmService.listFavoritesMovies();
+                getSwipeRefreshLayout().setRefreshing(true);
+                adapter.putMovies(mainViewModel.moviesFavoritesMutable.getValue());
+                getMoviesRecyclerView().scrollToPosition(0);
+                getSwipeRefreshLayout().setRefreshing(false);
+                this.screen = 3;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -181,31 +185,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume(){
         super.onResume();
-
-    }
-
-    private void firstScreen() {
-        this.pmService.downloadPopularMovieList();
-        getSwipeRefreshLayout().setRefreshing(false);
+        PopularMoviesApplication.getEventBus().register(this);
+        if (this.screen == 3) {
+            adapter.putMovies(mainViewModel.moviesFavoritesMutable.getValue());
+        }
     }
 
     @Override
     protected void onPause() {
+        PopularMoviesApplication.getEventBus().register(this);
         super.onPause();
-
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
-
         try{
             if (connectedService && pmService != null) {
                 unbindService(conn);
@@ -213,14 +211,17 @@ public class MainActivity extends AppCompatActivity {
         } catch (IllegalArgumentException iae) {
             Log.e(TAG, iae.getMessage());
         }
+        super.onStop();
     }
+
 
     /**
      * Assign to {@link MainActivity#getMoviesRecyclerView()} an Adapter for {@link Movie}.
      */
-    private void assignMoviesViews() {
-
-        adapter = new MoviesAdapter(this.mainViewModel.getMovies());
+    private void assignAdapterViews() {
+        final String TAG_M = "assignAdapterViews() ";
+        Log.v(TAG, TAG_M);
+        adapter = new MoviesAdapter(this.mainViewModel.movies, MainActivity.this);
         getMoviesRecyclerView().setAdapter(adapter);
     }
 
@@ -229,10 +230,58 @@ public class MainActivity extends AppCompatActivity {
      * @param details <code>MovieTO</code> to send data into <code>Intent</code>
      */
     public void startDetailActivity(Movie details) {
-        Log.v(TAG, "MovieTO sent: " + details.toString());
+        final String TAG_M = "startDetailActivity() ";
+        Log.v(TAG, TAG_M + "Movie sent: " + details.toString());
+
+        pmService.downloadReviewList(details.getId());
+        pmService.downloadVideoList(details.getId());
+
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.ID_EXTRA_MOVIE_DETAIL, details);
         this.startActivity(intent);
+    }
+
+    @Subscribe
+    public void downloadedMovieList(FetchededNewMovieListEvent event) {
+        final String TAG_M = "downloadedMovieList() ";
+        Log.v(TAG, TAG_M + "=======================================================");
+        getSwipeRefreshLayout().setRefreshing(false);
+    }
+
+    @Subscribe
+    public void fetchError(FetchNewMovieListErrorEvent event) {
+        final String TAG_M = "fetchError() ";
+        Log.v(TAG, TAG_M + "=======================================================");
+        getSwipeRefreshLayout().setRefreshing(false);
+    }
+
+
+
+    public class PopularMoviesServiceConnection implements ServiceConnection{
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            final String TAG_M = "onServiceConnected() ";
+            Log.v(TAG, TAG_M + "++++++++++++++++++++++++++++++++++++++++++++++++");
+            pmService= ((PopularMoviesRepositoryService.PopularMoviesRepositoryServiceBinder) service).getService();
+            connectedService = true;
+
+            mainViewModel.moviesPopularMutable = (MutableLiveData<List<Movie>>) pmService.getPopularMovies();
+            mainViewModel.moviesTopRatedMutable = (MutableLiveData<List<Movie>>) pmService.getRatedMovies();
+            mainViewModel.moviesFavoritesMutable = (MutableLiveData<List<Movie>>) pmService.getFavoriteMovies();
+
+            adapter.putMovies(mainViewModel.moviesPopularMutable.getValue());
+            getSwipeRefreshLayout().setRefreshing(false);
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            final String TAG_M = "onServiceDisconnected() ";
+            Log.v(TAG, TAG_M + "++++++++++++++++++++++++++++++++++++++++++++++");
+            pmService = null;
+            connectedService = false;
+        }
     }
 
 }

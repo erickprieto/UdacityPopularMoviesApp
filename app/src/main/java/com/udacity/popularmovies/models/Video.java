@@ -9,6 +9,22 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Video implements Parcelable {
 
+    public static final Parcelable.Creator<Video> CREATOR = new Creator<Video>() {
+
+        @SuppressWarnings({"unchecked"})
+        public Video createFromParcel(Parcel in) {
+            return new Video(in);
+        }
+
+        public Video[] newArray(int size) {
+            return (new Video[size]);
+        }
+
+    };
+
+    private static final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
+    private static final String YOUTUBE_APP_URL  = "vnd.youtube:";
+
     private String id;
 
     private String languageISOCode;
@@ -24,21 +40,6 @@ public class Video implements Parcelable {
     private Integer size;
 
     private String type;
-
-    public final static Parcelable.Creator<Video> CREATOR = new Creator<Video>() {
-
-
-        @SuppressWarnings({"unchecked"})
-        public Video createFromParcel(Parcel in) {
-            return new Video(in);
-        }
-
-        public Video[] newArray(int size) {
-            return (new Video[size]);
-        }
-
-    }
-            ;
 
     protected Video(Parcel in) {
         this.id = ((String) in.readValue((String.class.getClassLoader())));
@@ -135,6 +136,13 @@ public class Video implements Parcelable {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getUrl() {
+        return resourceKey;
+    }
+
+    public String buildWebYoutubeUrl() { return YOUTUBE_BASE_URL + resourceKey; }
+    public String buildAppYoutubeUrl() { return YOUTUBE_APP_URL + resourceKey; }
 
     @Override
     public String toString() {

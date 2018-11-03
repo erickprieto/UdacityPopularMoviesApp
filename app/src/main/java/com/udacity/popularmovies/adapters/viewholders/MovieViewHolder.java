@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.udacity.popularmovies.R;
+import com.udacity.popularmovies.adapters.MoviesAdapter;
 import com.udacity.popularmovies.models.Movie;
 
 /**
@@ -16,9 +17,13 @@ public class MovieViewHolder extends RecyclerView.ViewHolder{
 
     private ImageView posterImageView;
 
+    /**
+     * Constructor build templates of layout to fill the adapter.
+     * @param itemView {@link View} of every element to show on {@link MoviesAdapter}.
+     */
     public MovieViewHolder(View itemView) {
         super(itemView);
-        this.posterImageView = (ImageView) itemView.findViewById(R.id.movie_imageView);
+        this.posterImageView = (ImageView) itemView.findViewById(R.id.movieViewHolder_posterImageView);
     }
 
     public ImageView getPosterImageView() {

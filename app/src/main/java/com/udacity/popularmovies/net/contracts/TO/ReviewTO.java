@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewTO implements Parcelable
+public class ReviewTO implements ModelTO, Parcelable
 {
 
     @SerializedName("author")

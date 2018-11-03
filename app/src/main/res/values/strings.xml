@@ -18,6 +18,7 @@
 
     <!-- Content descriptions-->
     <string name="DetailActivity_posterDescriptionImageView">poster</string>
+    <string name="DetailActivity_durationTextView">123 min</string>
 
     <!-- Error messages-->
     <string name="DetailActivity_detailErrorMessage">Sandwich data not available</string>
@@ -32,5 +33,6 @@
 
 
     <string name="a">Test String</string>
+
 
 </resources>

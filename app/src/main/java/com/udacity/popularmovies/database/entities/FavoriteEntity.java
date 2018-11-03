@@ -1,5 +1,6 @@
 package com.udacity.popularmovies.database.entities;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
@@ -29,17 +30,22 @@ public class FavoriteEntity implements Parcelable {
     @PrimaryKey
     private int id;
 
+    @ColumnInfo(name = "favorite")
+    private int favorite;
+
     @Ignore
     public FavoriteEntity() { }
 
 
-    public FavoriteEntity(int id) {
+    public FavoriteEntity(int id, int favorite) {
         this.id = id;
+        this.favorite = favorite;
     }
 
     @Ignore
     protected FavoriteEntity( Parcel in) {
         this.id = in.readInt();
+        this.favorite = in.readInt();
     }
 
     public int getId() {
@@ -48,6 +54,14 @@ public class FavoriteEntity implements Parcelable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
     }
 
     @Ignore
@@ -59,7 +73,9 @@ public class FavoriteEntity implements Parcelable {
     @Ignore
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeInt(id);
+        dest.writeInt(favorite);
     }
 
 
@@ -68,6 +84,7 @@ public class FavoriteEntity implements Parcelable {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", this.id)
+                .append("favorite", this.favorite)
                 .toString();
     }
 
@@ -76,6 +93,7 @@ public class FavoriteEntity implements Parcelable {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.id)
+                .append(this.favorite)
                 .toHashCode();
     }
 
@@ -91,6 +109,7 @@ public class FavoriteEntity implements Parcelable {
         FavoriteEntity rhs = ((FavoriteEntity) other);
         return new EqualsBuilder()
                 .append(this.id, rhs.id)
+                .append(this.favorite, rhs.favorite)
                 .isEquals();
     }
 

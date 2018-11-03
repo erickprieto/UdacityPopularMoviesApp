@@ -18,7 +18,7 @@ public interface FavoriteDao {
     LiveData<List<FavoriteEntity>> getAll();
 
     @Query("SELECT * FROM favorite WHERE id = :id LIMIT 1")
-    LiveData<FavoriteEntity> isFavorite(int id);
+    FavoriteEntity isFavorite(int id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(FavoriteEntity[] favorites);

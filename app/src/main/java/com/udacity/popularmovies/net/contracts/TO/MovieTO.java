@@ -20,7 +20,7 @@ import java.util.List;
  * @author Erick Prieto
  * @since 2018
  */
-public class MovieTO implements Parcelable{
+public class MovieTO implements ModelTO, Parcelable{
 
     /**
      * Date Format of {@link MovieTO#releaseDate}.

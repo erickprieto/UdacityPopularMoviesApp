@@ -1,13 +1,16 @@
 package com.udacity.popularmovies.viewmodels;
 
+
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
+
+import com.udacity.popularmovies.PopularMoviesApplication;
 import com.udacity.popularmovies.models.Movie;
-import com.udacity.popularmovies.repositories.MovieRepository;
 
+import java.util.ArrayList;
 import java.util.List;
-
 
 
 /**
@@ -22,25 +25,30 @@ public class MainViewModel extends ViewModel {
      */
     private static final String TAG = MainViewModel.class.getSimpleName();
 
-    public MovieRepository movieRepo;
+    /**
+     * List of {@link Movie} from WebService or <code>Bundle</code>.
+     */
+    public MutableLiveData<List<Movie>> moviesPopularMutable;
+    public MutableLiveData<List<Movie>> moviesTopRatedMutable;
+    public MutableLiveData<List<Movie>> moviesFavoritesMutable;
+
+
+    public List<Movie> movies = new ArrayList<>();
+
 
     public MainViewModel() {
         super();
-        this.movieRepo = new MovieRepository();
-    }
+        PopularMoviesApplication.getEventBus().register(this);
 
-    public List<Movie> getMovies() {
-        return movieRepo.getPopularMovies().getValue();
-    }
-
-    public void setMovies(List<Movie> movies) {
-        this.movieRepo.updatePopularMovies(movies);
     }
 
     @Override
     protected void onCleared() {
+        Log.v(TAG, "onCleared()");
+        PopularMoviesApplication.getEventBus().unregister(this);
         super.onCleared();
-        Log.v(TAG, "onCleared");
+
     }
+
 
 }

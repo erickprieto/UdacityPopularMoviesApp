@@ -14,7 +14,7 @@ import com.udacity.popularmovies.models.Video;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoTO implements Parcelable
+public class VideoTO implements ModelTO, Parcelable
 {
 
     @SerializedName("id")

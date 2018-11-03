@@ -9,16 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Review implements Parcelable {
 
-    private String authorUserName;
-
-    private String contentReview;
-
-    private String id;
-
-    private String url;
-
-    public final static Parcelable.Creator<Review> CREATOR = new Creator<Review>() {
-
+    public static final Parcelable.Creator<Review> CREATOR = new Creator<Review>() {
 
         @SuppressWarnings({"unchecked"})
         public Review createFromParcel(Parcel in) {
@@ -29,8 +20,15 @@ public class Review implements Parcelable {
             return (new Review[size]);
         }
 
-    }
-            ;
+    };
+
+    private String authorUserName;
+
+    private String contentReview;
+
+    private String id;
+
+    private String url;
 
     protected Review(Parcel in) {
         this.authorUserName = ((String) in.readValue((String.class.getClassLoader())));
@@ -86,9 +84,10 @@ public class Review implements Parcelable {
 
     @Override
     public String toString() {
+        int max = (contentReview.length() > 20) ? 20 : contentReview.length();
         return new ToStringBuilder(this)
                 .append("authorUserName", authorUserName)
-                .append("contentReview", contentReview)
+                .append("contentReview", contentReview.substring(0, max) + "...")
                 .append("id", id)
                 .append("url", url)
                 .toString();

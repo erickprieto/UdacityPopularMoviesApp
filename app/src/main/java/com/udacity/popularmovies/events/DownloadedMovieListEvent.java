@@ -5,12 +5,12 @@ import com.udacity.popularmovies.models.Movie;
 
 import java.util.List;
 
-public class DownloadMovieListEvent {
+public class DownloadedMovieListEvent {
 
     private boolean popularMovie;
     private List<Movie> modelos;
 
-    public DownloadMovieListEvent(List<Movie> modelos, boolean popularMovie) {
+    public DownloadedMovieListEvent(List<Movie> modelos, boolean popularMovie) {
         this.modelos = modelos;
         this.popularMovie = popularMovie;
     }

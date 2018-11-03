@@ -8,17 +8,24 @@ import java.io.ByteArrayOutputStream;
 
 public class BitmapTypeConverter {
 
+    private static final int DEFAULT_OFFSET = 0;
+
+    /**
+     * (small size) 0 - 100 (max quality)
+     */
+    private static final int JPEG_QUALITY = 100;
+
     @TypeConverter
     public Bitmap toBitmap(byte[] value) {
         if(value == null) { return null; }
-        return BitmapFactory.decodeByteArray(value, 0, value.length);
+        return BitmapFactory.decodeByteArray(value, DEFAULT_OFFSET, value.length);
     }
 
     @TypeConverter
     public byte[] toByteArray(Bitmap bitmap) {
         if(bitmap == null) { return null; }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, stream);
         return stream.toByteArray();
     }
 

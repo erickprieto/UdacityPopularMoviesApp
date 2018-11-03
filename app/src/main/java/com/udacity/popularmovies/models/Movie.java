@@ -4,10 +4,15 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.udacity.popularmovies.database.converters.BitmapTypeConverter;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +23,7 @@ import java.util.List;
 public class Movie implements Parcelable {
 
 
-    public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
+    public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
         @Override
         public Movie createFromParcel(Parcel in) {
@@ -65,6 +70,8 @@ public class Movie implements Parcelable {
 
     private Bitmap posterImage;
 
+    private boolean favorite;
+
     private List<Review> reviews;
 
     private List<Video> videos;
@@ -76,11 +83,22 @@ public class Movie implements Parcelable {
 
     protected Movie(Parcel in) {
         this.id = in.readInt();
-        this.voteAverage = in.readDouble();
         this.title = in.readString();
-        this.posterPath = in.readString();
-        this.overview = in.readString();
         this.releaseDate = in.readString();
+        this.voteAverage = in.readDouble();
+        this.posterPath = in.readString();
+        BitmapTypeConverter bc = new BitmapTypeConverter();
+        this.posterImage = bc.toBitmap(in.createByteArray());
+        this.overview = in.readString();
+        final ArrayList<Video> tmpVideoList =
+                in.readArrayList(Video.class.getClassLoader());
+        this.videos = tmpVideoList;
+        final ArrayList<Review> tmpReviewList =
+                in.readArrayList(Review.class.getClassLoader());
+        this.reviews = tmpReviewList;
+        boolean[] fav = new boolean[1];
+        in.readBooleanArray(fav);
+        this.favorite = fav[0];
     }
 
     /**
@@ -94,10 +112,12 @@ public class Movie implements Parcelable {
             , Double voteAverage) {
         this.id = id;
         this.title = title;
-        this.overview = overview;
         this.releaseDate = releaseDate;
-        this.posterPath = posterPath;
         this.voteAverage = voteAverage;
+        this.posterPath = posterPath;
+        this.overview = overview;
+
+
     }
 
     public Integer getId() {
@@ -163,13 +183,51 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    public Bitmap getPosterImage() {
+        return posterImage;
+    }
+
+    public void setPosterImage(Bitmap posterImage) {
+        this.posterImage = posterImage;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<Video> videos) {
+        this.videos = videos;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeDouble(voteAverage);
         dest.writeString(title);
-        dest.writeString(posterPath);
-        dest.writeString(overview);
         dest.writeString(releaseDate);
+        dest.writeDouble(voteAverage);
+        dest.writeString(posterPath);
+        BitmapTypeConverter bc = new BitmapTypeConverter();
+        dest.writeByteArray(bc.toByteArray(posterImage));
+        dest.writeString(overview);
+        dest.writeArray(videos != null ? videos.toArray() : null);
+        dest.writeArray(reviews != null ? reviews.toArray(): null);
+        dest.writeBooleanArray(new boolean[] { this.favorite });
+
     }
 
     public int describeContents() {
@@ -178,25 +236,34 @@ public class Movie implements Parcelable {
 
     @Override
     public String toString() {
+        int max = (overview.length() > 20) ? 20 : overview.length();
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("title", title)
                 .append("releaseDate", releaseDate)
                 .append("voteAverage", voteAverage)
                 .append("posterPath", posterPath)
-                .append("overview", overview)
+                .append("posterImage", posterImage == null ? "null" : posterImage.toString())
+                .append("overview", overview.substring(0, max) + "...")
+                .append("videos", videos)
+                .append("reviews", reviews)
+                .append("favorite", favorite)
                 .toString();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(id)
-                .append(title)
-                .append(releaseDate)
-                .append(overview)
-                .append(posterPath)
-                .append(voteAverage)
+                .append(this.id)
+                .append(this.title)
+                .append(this.releaseDate)
+                .append(this.voteAverage)
+                .append(this.posterPath)
+                .append(this.posterImage)
+                .append(this.overview)
+                .append(this.videos)
+                .append(this.reviews)
+                .append(this.favorite)
                 .toHashCode();
     }
 
@@ -210,12 +277,16 @@ public class Movie implements Parcelable {
         }
         Movie rhs = ((Movie) other);
         return new EqualsBuilder()
-                .append(id, rhs.id)
-                .append(title, rhs.title)
-                .append(releaseDate, rhs.releaseDate)
-                .append(overview, rhs.overview)
-                .append(posterPath, rhs.posterPath)
-                .append(voteAverage, rhs.voteAverage)
+                .append(this.id, rhs.id)
+                .append(this.title, rhs.title)
+                .append(this.releaseDate, rhs.releaseDate)
+                .append(this.voteAverage, rhs.voteAverage)
+                .append(this.posterPath, rhs.posterPath)
+                .append(this.posterImage, rhs.posterImage)
+                .append(this.overview, rhs.overview)
+                .append(this.videos,rhs.videos)
+                .append(this.reviews, rhs.reviews)
+                .append(this.favorite, rhs.favorite)
                 .isEquals();
     }
 

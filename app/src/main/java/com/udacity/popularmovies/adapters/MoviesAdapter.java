@@ -2,18 +2,16 @@ package com.udacity.popularmovies.adapters;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
 import com.udacity.popularmovies.R;
-import com.udacity.popularmovies.activities.DetailActivity;
+import com.udacity.popularmovies.activities.MainActivity;
 import com.udacity.popularmovies.adapters.viewholders.MovieViewHolder;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.utils.ProxyHelper;
@@ -37,11 +35,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> {
      */
     private List<Movie> moviesList;
 
+    private Context context;
+
     /**
      * Default Constructor with Data to fill this adapter.
      * @param movies
+     * @param context
      */
-    public MoviesAdapter(List<Movie> movies) {
+    public MoviesAdapter(List<Movie> movies, Context context) {
+
+        this.context = context;
         this.moviesList = movies;
     }
 
@@ -50,31 +53,35 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View movieItemView = inflater.inflate(R.layout.activitymain_listitem, parent, false);
+        View movieItemView = inflater.inflate(R.layout.activitymain_movieitem, parent, false);
 
         MovieViewHolder viewHolder = new MovieViewHolder(movieItemView);
+
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-
+        final String TAG_M = "onBindViewHolder() ";
         final Movie movie = moviesList.get(position);
 
-        Picasso.with(holder.itemView.getContext())
-                .load(ProxyHelper.buildCompletePosterUrl(movie.getPosterPath()))
-                .error(android.support.v7.appcompat.R.drawable.notification_bg_low_pressed)
-                .into(holder.getPosterImageView());
-
-        final Context context = holder.getPosterImageView().getContext();
+        if (movie.getPosterImage() == null) {
+            Log.v(TAG, TAG_M + "Poster from URL");
+            Picasso.with(holder.itemView.getContext())
+                    .load(ProxyHelper.buildCompletePosterUrl(movie.getPosterPath()))
+                    .error(R.drawable.ic_baseline_broken_image_24px)
+                    .into(holder.getPosterImageView());
+        } else {
+            Log.v(TAG, TAG_M + "Poster from Bitmap");
+            holder.getPosterImageView().setImageBitmap(movie.getPosterImage());
+        }
 
         holder.getPosterImageView().setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, DetailActivity.class);
-                Log.d(TAG, movie.toString());
-                intent.putExtra(DetailActivity.ID_EXTRA_MOVIE_DETAIL, movie);
-                context.startActivity(intent);
+
+                ((MainActivity)context).startDetailActivity(movie);
             }
         });
 
@@ -83,7 +90,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     @Override
     public int getItemCount() {
-        int count ;
+        int count;
 
         if(this.moviesList != null && !this.moviesList.isEmpty()) {
             count = this.moviesList.size();
@@ -102,10 +109,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> {
      * @param movies New list<code>MovieTO</code> to update.
      */
     public void putMovies(List<Movie> movies) {
+        if (movies == null) { return; }
         this.moviesList.clear();
         this.moviesList.addAll(movies);
         notifyDataSetChanged();
-
     }
 
 }

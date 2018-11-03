@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.udacity.popularmovies.R;
-import com.udacity.popularmovies.services.PopularMoviesDatabaseService;
 import com.udacity.popularmovies.utils.ProxyHelper;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +22,11 @@ public class SplashActivity extends AppCompatActivity {
      */
     private static final String TAG = SplashActivity.class.getSimpleName();
 
+    /**
+     * Intent to launch {@link MainActivity}.
+     */
+    private Intent activityIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,15 +38,24 @@ public class SplashActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(!licenseAPIisValid()) {
-            Toast.makeText(this, R.string.SplashActivity_apiValidationErrorToast, Toast.LENGTH_LONG)
+            Toast.makeText(this
+                    , R.string.SplashActivity_apiValidationErrorToast
+                    , Toast.LENGTH_LONG)
                     .show();
             finish();
         } else {
-            Intent activityIntent = new Intent(this, MainActivity.class);
-            activityIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            SplashActivity.this.startActivity(activityIntent);
-            SplashActivity.this.finish();
+            startMainActivity();
         }
+    }
+
+    /**
+     * To launch {@link MainActivity}.
+     */
+    private void startMainActivity() {
+        activityIntent = new Intent(this, MainActivity.class);
+        activityIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        SplashActivity.this.startActivity(activityIntent);
+        SplashActivity.this.finish();
     }
 
     /**

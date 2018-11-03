@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detailActivity_videoItem"
+    android:padding="@dimen/default_gap"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/videoViewHolder_playMovieIconImageView"
+        android:layout_width="0dp"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:contentDescription="@string/a"
+        android:src="@drawable/ic_baseline_play_circle_outline_24px"
+        app:layout_constraintEnd_toStartOf="@+id/videoViewHolder_movieIconImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/videoViewHolder_movieIconImageView"
+        android:layout_width="0dp"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:contentDescription="@string/a"
+        android:src="@drawable/ic_baseline_movie_24px"
+        app:layout_constraintEnd_toStartOf="@+id/videoViewHolder_videoTitleTextView"
+        app:layout_constraintStart_toEndOf="@+id/videoViewHolder_playMovieIconImageView" />
+
+    <TextView
+        android:id="@+id/videoViewHolder_videoTitleTextView"
+        android:layout_width="256dp"
+        android:layout_height="match_parent"
+        android:text="@string/a"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/videoViewHolder_shareIconImageView"
+        app:layout_constraintStart_toEndOf="@+id/videoViewHolder_movieIconImageView" />
+
+    <ImageView
+        android:id="@+id/videoViewHolder_shareIconImageView"
+        android:layout_width="0dp"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:contentDescription="@string/a"
+        android:src="@drawable/ic_baseline_share_24px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/videoViewHolder_videoTitleTextView" />
+</android.support.constraint.ConstraintLayout>
