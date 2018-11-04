@@ -30,7 +30,6 @@ import com.udacity.popularmovies.events.DownloadedReviewListEvent;
 import com.udacity.popularmovies.events.DownloadedVideoListEvent;
 import com.udacity.popularmovies.events.EstablishedMovieFavoriteEvent;
 import com.udacity.popularmovies.events.FetchNewMovieListErrorEvent;
-import com.udacity.popularmovies.events.FetchededNewMovieListEvent;
 import com.udacity.popularmovies.events.SetFavoriteMovieEvent;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.models.MovieServiceLanguage;
@@ -115,31 +114,10 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
     @Override
     public void onCreate() {
         super.onCreate();
-        final String TAG_M = "onStartCommand() ";
+        final String TAG_M = "onCreate() ";
         Log.v(TAG, TAG_M);
         PopularMoviesApplication.getEventBus().register(this);
         openPopularMoviesDatabase();
-
-        this.moviesPopularMutable.observe((PopularMoviesRepositoryService) context, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                Log.v(TAG, "onChanged M Dao Popular Movies");
-            }
-        });
-
-        this.moviesTopRatedMutable.observe((PopularMoviesRepositoryService) context, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                Log.v(TAG, "onChanged M Dao Top Rated Movies");
-            }
-        });
-
-        this.moviesFavoriteMutable.observe((PopularMoviesRepositoryService) context, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                Log.v(TAG, "onChanged M Dao All Movies");
-            }
-        });
 
 
     }
@@ -149,7 +127,7 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
         super.onStartCommand(intent, flags, startId);
         final String TAG_M = "onStartCommand() ";
         Log.v(TAG, TAG_M);
-
+        fetchPopularMovieList();
         return Service.START_STICKY;
     }
 
@@ -181,7 +159,7 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
 
                             @Override
                             public void onChanged(@Nullable List<MovieEntity> entities) {
-                                Log.v(TAG, "onChanged Dao Popular Movies");
+                                Log.v(TAG, "onChanged Dao Popular Movies " + entities.size());
                                 ((MutableLiveData) moviesPopularMutable).setValue(MovieEntity.toListModel(entities));
                             }
                 });
@@ -190,7 +168,7 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
                         , new Observer<List<MovieEntity>>() {
                             @Override
                             public void onChanged(@Nullable List<MovieEntity> entities) {
-                                Log.v(TAG, "onChanged Dao Top Rated Movies");
+                                Log.v(TAG, "onChanged Dao Top Rated Movies " + entities.size());
                                 ((MutableLiveData) moviesTopRatedMutable).setValue(MovieEntity.toListModel(entities));
                             }
                 });
@@ -199,7 +177,7 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
                         , new Observer<List<MovieEntity>>() {
                             @Override
                             public void onChanged(@Nullable List<MovieEntity> entities) {
-                                Log.v(TAG, "onChanged Dao Favorites Movies");
+                                Log.v(TAG, "onChanged Dao Favorites Movies " + entities.size());
                                 ((MutableLiveData) moviesFavoriteMutable).setValue(MovieEntity.toListModel(entities));
                             }
                         });
@@ -454,7 +432,6 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
                             }
                         });
 
-                Thread.sleep(50);
             }
         } catch (Exception ex) {
             Log.e(TAG, TAG_M + ex.getMessage());
@@ -469,17 +446,15 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
         final String TAG_M = "insertMoviesEntities() ";
 
         if (this.movieEntitiesArray == null) { return; }
-        Log.v(TAG, TAG_M + "+++++++++++++++++++++++++++++++++++++++++++++++++ "
+        Log.v(TAG, TAG_M + "====================================================== "
                 + this.movieEntitiesArray.toString());
         threadDbTaskExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 db.movieDao().insertAll(movieEntitiesArray);
-                Log.v(TAG, TAG_M + "+++++++++++++++++++++++++++++++++++++++++++++++++ inserted ");
+                Log.v(TAG, TAG_M + "====================================================== inserted ");
             }
         });
-        PopularMoviesApplication.getEventBus().post(new FetchededNewMovieListEvent());
-
     }
 
 
@@ -553,18 +528,11 @@ public class PopularMoviesRepositoryService extends LifecycleService implements 
 
     @Override
     public LiveData<List<Movie>> getPopularMovies() {
-        if(moviesPopularMutable.getValue().size() == 0) {
-            fetchPopularMovieList();
-        }
-
         return moviesPopularMutable;
     }
 
     @Override
     public LiveData<List<Movie>> getRatedMovies() {
-        if(moviesTopRatedMutable.getValue().size() == 0) {
-            fetchTopRatedMovieList();
-        }
         return this.moviesTopRatedMutable;
     }
 

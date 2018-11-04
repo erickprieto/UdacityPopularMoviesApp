@@ -1,6 +1,5 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net;
 
-import com.udacity.popularmovies.net.contracts.TO.PageResultVideosTO;
 import com.udacity.popularmovies.net.contracts.TO.VideoTO;
 
 import org.junit.Before;
@@ -9,22 +8,20 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PageResultVideosTest {
-    private PageResultVideosTO given;
-    private PageResultVideosTO expected;
-    private VideoTO video;
+/**
+ * Unit Test for {@link VideoTO} model.
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
+public class VideoTOTest {
+    private VideoTO given;
+    private VideoTO expected;
 
     @Before
     public void setUp() throws Exception {
-
-        video = new VideoTO();
-        video.setId("2");
-
-        given = new PageResultVideosTO();
-
-        expected = new PageResultVideosTO();
-
-
+        given = new VideoTO();
+        expected = new VideoTO();
     }
 
     @Test
@@ -34,6 +31,7 @@ public class PageResultVideosTest {
 
     @Test
     public void equalsNullValidator_ShouldReturnFalse() {
-        assertFalse("equalsValidator_ShouldReturnTrue the same", expected.equals(null));
+
+        assertFalse("equalsNullValidator_ShouldReturnFalse the same", expected.equals(null));
     }
 }

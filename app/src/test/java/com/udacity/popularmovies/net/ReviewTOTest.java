@@ -1,4 +1,6 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net;
+
+import com.udacity.popularmovies.net.contracts.TO.ReviewTO;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,26 +9,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit Test for {@link Review} model.
+ * Unit Test for {@link ReviewTO} model.
  *
  * @author Erick Prieto
  * @since 2018
  */
-public class ReviewTest {
+public class ReviewTOTest {
 
-    private Review given;
-    private Review expected;
+    private ReviewTO given;
+    private ReviewTO expected;
 
     @Before
     public void setUp() throws Exception {
 
-        given = new Review();
-        given.setId("1");
-
-        expected = new Review();
-        expected.setId("1");
-
-
+        expected = new ReviewTO();
+        given = new ReviewTO();
     }
 
     @Test
@@ -39,5 +36,4 @@ public class ReviewTest {
 
         assertFalse("equalsNullValidator_ShouldReturnFalse the same", expected.equals(null));
     }
-
 }

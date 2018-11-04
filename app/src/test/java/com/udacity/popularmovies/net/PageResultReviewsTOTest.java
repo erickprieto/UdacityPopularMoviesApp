@@ -1,4 +1,4 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net;
 
 import com.udacity.popularmovies.net.contracts.TO.PageResultReviewsTO;
 import com.udacity.popularmovies.net.contracts.TO.ReviewTO;
@@ -9,7 +9,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PageResultReviewsTest {
+/**
+ * Unit Test for {@link PageResultReviewsTO} model.
+ *
+ * @author Erick Prieto
+ * @since 2018
+ */
+public class PageResultReviewsTOTest {
 
     private PageResultReviewsTO given;
     private PageResultReviewsTO expected;
@@ -42,6 +48,6 @@ public class PageResultReviewsTest {
 
     @Test
     public void equalsNullValidator_ShouldReturnFalse() {
-        assertFalse("equalsValidator_ShouldReturnTrue the same", expected.equals(null));
+        assertFalse("equalsNullValidator_ShouldReturnFalse the same", expected.equals(null));
     }
 }

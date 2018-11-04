@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 
 public class DownloadedPosterEvent {
 
-
-
     public DownloadedPosterEvent() {
 
     }

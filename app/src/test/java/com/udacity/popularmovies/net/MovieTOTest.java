@@ -1,25 +1,28 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.net;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.udacity.popularmovies.net.contracts.TO.MovieTO;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 /**
- * Unit Test for {@link Movie} model.
+ * Unit Test for {@link MovieTO} model.
  *
  * @author Erick Prieto
  * @since 2018
  */
-public class MovieTest {
+public class MovieTOTest {
 
-    private Movie given;
-    private Movie expected;
+    private MovieTO given;
+    private MovieTO expected;
 
     @Before
     public void setUp() throws Exception {
 
-        given = new Movie();
+        given = new MovieTO();
         given.setId(1);
         given.setTitle("Venom");
         given.setPosterPath("/file.png");
@@ -27,7 +30,7 @@ public class MovieTest {
         given.setReleaseDate("2018-01-01");
         given.setVoteAverage(100.0);
 
-        expected = new Movie();
+        expected = new MovieTO();
         expected.setId(1);
         expected.setTitle("Venom");
         expected.setPosterPath("/file.png");

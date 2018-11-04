@@ -2,12 +2,15 @@ package com.udacity.popularmovies.viewmodels;
 
 
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 
 import com.udacity.popularmovies.PopularMoviesApplication;
 import com.udacity.popularmovies.models.Movie;
+import com.udacity.popularmovies.services.PopularMoviesRepositoryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +38,6 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<Movie>> moviesPopularMutable;
     private MutableLiveData<List<Movie>> moviesTopRatedMutable;
     private MutableLiveData<List<Movie>> moviesFavoritesMutable;
-
-
-    private List<Movie> movies = new ArrayList<>();
 
 
     /**
@@ -73,20 +73,11 @@ public class MainViewModel extends ViewModel {
         this.moviesFavoritesMutable = moviesFavoritesMutable;
     }
 
-    public List<Movie> getMovies() {
-        return movies;
-    }
-
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
-    }
-
     @Override
     protected void onCleared() {
         Log.v(TAG, "onCleared()");
         PopularMoviesApplication.getEventBus().unregister(this);
         super.onCleared();
-
     }
 
 

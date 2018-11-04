@@ -1,4 +1,6 @@
-package com.udacity.popularmovies.models;
+package com.udacity.popularmovies.database;
+
+import com.udacity.popularmovies.database.entities.FavoriteEntity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,25 +9,27 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Unit Test for {@link Review} model.
+ * Unit Test for {@link com.udacity.popularmovies.database.entities.FavoriteEntity} model.
  *
  * @author Erick Prieto
  * @since 2018
  */
-public class ReviewTest {
+public class FavoriteEntityTest {
 
-    private Review given;
-    private Review expected;
+    private FavoriteEntity given;
+    private FavoriteEntity expected;
 
     @Before
     public void setUp() throws Exception {
 
-        given = new Review();
-        given.setId("1");
+        given = new FavoriteEntity();
+        given.setId(1);
+        given.setFavorite(1);
 
-        expected = new Review();
-        expected.setId("1");
 
+        expected = new FavoriteEntity();
+        expected.setId(1);
+        expected.setFavorite(1);
 
     }
 

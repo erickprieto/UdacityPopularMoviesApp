@@ -1,14 +1,18 @@
 package com.udacity.popularmovies.activities;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,13 +20,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 import com.udacity.popularmovies.PopularMoviesApplication;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapters.MoviesAdapter;
 import com.udacity.popularmovies.events.FetchNewMovieListErrorEvent;
-import com.udacity.popularmovies.events.FetchededNewMovieListEvent;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.models.Review;
 import com.udacity.popularmovies.models.Video;
@@ -88,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private PopularMoviesServiceConnection conn = new PopularMoviesServiceConnection();
 
+    /**
+     * This <c>Activity</c>
+     */
+    private Context context;
 
 
     //To assign Views
@@ -118,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = this;
 
         intentService = new Intent(this, PopularMoviesRepositoryService.class);
 
@@ -144,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 final String TAG_M = "onRefresh() ";
-                Log.v(TAG, TAG_M);
+                Log.v(TAG, TAG_M + screen);
                 if (screen == 1) {
                     pmService.fetchPopularMovieList();
                 } else if (screen == 2) {
@@ -195,6 +204,8 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menuitem_sortby_popular:
                 getSwipeRefreshLayout().setRefreshing(true);
+                if (mainViewModel.getMoviesPopularMutable().getValue().size() == 0) {
+                    pmService.fetchPopularMovieList(); }
                 adapter.putMovies(mainViewModel.getMoviesPopularMutable().getValue());
                 getMoviesRecyclerView().scrollToPosition(0);
                 getSwipeRefreshLayout().setRefreshing(false);
@@ -202,6 +213,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menuitem_sortby_rated:
                 getSwipeRefreshLayout().setRefreshing(true);
+                if (mainViewModel.getMoviesTopRatedMutable().getValue().size() == 0) {
+                    pmService.fetchTopRatedMovieList(); }
                 adapter.putMovies(mainViewModel.getMoviesTopRatedMutable().getValue());
                 getMoviesRecyclerView().scrollToPosition(0);
                 getSwipeRefreshLayout().setRefreshing(false);
@@ -283,13 +296,6 @@ public class MainActivity extends AppCompatActivity {
         this.startActivity(intent);
     }
 
-    @Subscribe
-    public void downloadedMovieList(FetchededNewMovieListEvent event) {
-        final String TAG_M = "downloadedMovieList() ";
-        Log.v(TAG, TAG_M + "=======================================================");
-        getSwipeRefreshLayout().setRefreshing(false);
-    }
-
     /**
      * Receive this Error event if an error happened when fetch new data from
      * webervices. Notify to {@link SwipeRefreshLayout} that job is done.
@@ -299,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
     public void fetchError(FetchNewMovieListErrorEvent event) {
         final String TAG_M = "fetchError() ";
         Log.v(TAG, TAG_M + "=======================================================");
+        Toast.makeText(this,R.string.RetrofitError_internalError ,Toast.LENGTH_LONG).show();
         getSwipeRefreshLayout().setRefreshing(false);
     }
 
@@ -320,9 +327,34 @@ public class MainActivity extends AppCompatActivity {
             mainViewModel.setMoviesTopRatedMutable((MutableLiveData<List<Movie>>) pmService.getRatedMovies());
             mainViewModel.setMoviesFavoritesMutable((MutableLiveData<List<Movie>>) pmService.getFavoriteMovies());
 
-            adapter.putMovies(mainViewModel.getMoviesPopularMutable().getValue());
-            getSwipeRefreshLayout().setRefreshing(false);
+            mainViewModel.getMoviesPopularMutable().observe((LifecycleOwner)context, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    Log.v(TAG, "onChanged M Dao Popular Movies " + movies.size());
+                    if(screen == 1) { adapter.putMovies(movies); }
+                    getSwipeRefreshLayout().setRefreshing(false);
+                }
+            });
 
+            mainViewModel.getMoviesTopRatedMutable().observe((LifecycleOwner)context, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    Log.v(TAG, "onChanged M Dao Top Rated Movies " + movies.size());
+                    if(screen == 2) { adapter.putMovies(movies); }
+                    getSwipeRefreshLayout().setRefreshing(false);
+                }
+            });
+
+            mainViewModel.getMoviesFavoritesMutable().observe((LifecycleOwner)context, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    Log.v(TAG, "onChanged M Dao Favorites Movies " + movies.size());
+                    if(screen == 3) { adapter.putMovies(movies); }
+                    getSwipeRefreshLayout().setRefreshing(false);
+                }
+            });
+
+            pmService.fetchPopularMovieList();
         }
 
         @Override
