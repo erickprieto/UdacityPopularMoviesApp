@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -362,8 +363,22 @@ public class DetailActivity extends AppCompatActivity {
     public void startWebView(String url){
         final String TAG_M = "startWebView() ";
         Log.v(TAG, TAG_M + url);
-        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(UrlValidator.validate(url)));
-        startActivity(webIntent);
+        try {
+            Uri urlValidated = Uri.parse(UrlValidator.validate(url));
+            if (urlValidated == null) {
+                throw new IllegalArgumentException(" No valid URL");
+            }
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, urlValidated);
+
+            if (webIntent.resolveActivity(getPackageManager())!= null) {
+                startActivity(webIntent);
+            } else {
+                Toast.makeText(context, R.string.DetailActivity_noDefaultWebBrowser, Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception ex) {
+            Log.i(TAG, url + ex.getMessage());
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -372,10 +387,18 @@ public class DetailActivity extends AppCompatActivity {
      * @param video Title and url ready to share.
      */
     public void shareYouTubeVideoTrailer(Video video) {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType(SHARING_URL_TYPE);
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, video.getName());
-        shareIntent.putExtra(Intent.EXTRA_TEXT, video.buildWebYoutubeUrl());
-        startActivity(Intent.createChooser(shareIntent, video.getName()));
+
+        Intent shareIntent = ShareCompat.IntentBuilder
+                .from(this)
+                .setType(SHARING_URL_TYPE)
+                .setSubject(video.getName())
+                .setText(video.buildWebYoutubeUrl())
+                .getIntent();
+
+        if(shareIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(Intent.createChooser(shareIntent, video.getName()));
+        } else {
+            Toast.makeText(context, R.string.DetailActivity_noShareAllowed, Toast.LENGTH_LONG).show();
+        }
     }
 }

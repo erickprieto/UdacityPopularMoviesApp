@@ -33,6 +33,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Log.v(TAG, savedInstanceState != null ? savedInstanceState.toString() : TAG);
         setContentView(R.layout.activity_splash);
     }
 

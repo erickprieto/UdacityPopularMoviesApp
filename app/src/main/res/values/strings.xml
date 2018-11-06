@@ -4,23 +4,26 @@
     <string name="SplashActivity_loadingTextView">loading...</string>
     <string name="SplashActivity_apiValidationErrorToast">License API not valid. Establish API resourceKey on conf.properties</string>
 
-    <!-- Menu-->
+    <!-- Main Activity -->
+    <!-- Menu -->
     <string name="MenuItem_sortByPopular">Popular</string>
     <string name="MenuItem_sortByRated">Rated</string>
     <string name="MenuItem_favorites">Favorites</string>
 
-    <!-- Detail Activity-->
+    <!-- Detail Activity -->
     <string name="DetailActivity_detailAlsoKnownAsLabel">Also known as:</string>
     <string name="DetailActivity_detailPlaceOfOriginLabel">Place of origin:</string>
     <string name="DetailActivity_detailDescriptionLabel">Description:</string>
     <string name="DetailActivity_detailIngredientsLabel">Ingredients:</string>
     <string name="DetailActivity_labelFavoriteButton">Favorite</string>
+    <string name="DetailActivity_noDefaultWebBrowser">No default WebBrowser.</string>
+    <string name="DetailActivity_noShareAllowed">No Share available or allowed.</string>
 
-    <!-- Content descriptions-->
+    <!-- Content descriptions -->
     <string name="DetailActivity_posterDescriptionImageView">poster</string>
     <string name="DetailActivity_durationTextView">123 min</string>
 
-    <!-- Error messages-->
+    <!-- Error messages -->
     <string name="DetailActivity_detailErrorMessage">Sandwich data not available</string>
     <string name="poster_image">Poster Image</string>
 
@@ -33,6 +36,7 @@
 
 
     <string name="a">Test String</string>
+
 
 
 </resources>

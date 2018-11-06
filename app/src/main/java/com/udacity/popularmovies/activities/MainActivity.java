@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
-     * Identifier to serialize {@link MainViewModel#movies}
+     * Identifier to serialize {@link MainActivity#screen}
      */
-    public static final String ID_SERIAL_MOVIES_LIST = "moviesList";
+    public static final String ID_SERIAL_SCREEN = "screen";
 
 
     private MainViewModel mainViewModel;
@@ -141,6 +141,89 @@ public class MainActivity extends AppCompatActivity {
         tofillUI();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sort, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_sortby_popular:
+                getSwipeRefreshLayout().setRefreshing(true);
+                if (mainViewModel.getMoviesPopularMutable().getValue().size() == 0) {
+                    pmService.fetchPopularMovieList(); }
+                adapter.putMovies(mainViewModel.getMoviesPopularMutable().getValue());
+                getMoviesRecyclerView().scrollToPosition(0);
+                getSwipeRefreshLayout().setRefreshing(false);
+                this.screen = 1;
+                return true;
+            case R.id.menuitem_sortby_rated:
+                getSwipeRefreshLayout().setRefreshing(true);
+                if (mainViewModel.getMoviesTopRatedMutable().getValue().size() == 0) {
+                    pmService.fetchTopRatedMovieList(); }
+                adapter.putMovies(mainViewModel.getMoviesTopRatedMutable().getValue());
+                getMoviesRecyclerView().scrollToPosition(0);
+                getSwipeRefreshLayout().setRefreshing(false);
+                this.screen = 2;
+                return true;
+            case R.id.menuitem_favorites:
+                getSwipeRefreshLayout().setRefreshing(true);
+                adapter.putMovies(mainViewModel.getMoviesFavoritesMutable().getValue());
+                getMoviesRecyclerView().scrollToPosition(0);
+                getSwipeRefreshLayout().setRefreshing(false);
+                this.screen = 3;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        this.screen = savedInstanceState.getByte(ID_SERIAL_SCREEN);
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        PopularMoviesApplication.getEventBus().register(this);
+        if (this.screen == 3) {
+            adapter.putMovies(mainViewModel.getMoviesFavoritesMutable().getValue());
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putByte(ID_SERIAL_SCREEN, this.screen);
+    }
+
+    @Override
+    protected void onPause() {
+        try{
+            if (connectedService && pmService != null) {
+                unbindService(conn);
+            }
+            } catch (IllegalArgumentException iae) {
+                Log.e(TAG, iae.getMessage());
+        }
+        PopularMoviesApplication.getEventBus().register(this);
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     /**
      * Fill UI of this <c>Activity</c>.
      */
@@ -190,78 +273,6 @@ public class MainActivity extends AppCompatActivity {
                 grid = new GridLayoutManager(this, 2);
         }
         return grid;
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_sort, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuitem_sortby_popular:
-                getSwipeRefreshLayout().setRefreshing(true);
-                if (mainViewModel.getMoviesPopularMutable().getValue().size() == 0) {
-                    pmService.fetchPopularMovieList(); }
-                adapter.putMovies(mainViewModel.getMoviesPopularMutable().getValue());
-                getMoviesRecyclerView().scrollToPosition(0);
-                getSwipeRefreshLayout().setRefreshing(false);
-                this.screen = 1;
-                return true;
-            case R.id.menuitem_sortby_rated:
-                getSwipeRefreshLayout().setRefreshing(true);
-                if (mainViewModel.getMoviesTopRatedMutable().getValue().size() == 0) {
-                    pmService.fetchTopRatedMovieList(); }
-                adapter.putMovies(mainViewModel.getMoviesTopRatedMutable().getValue());
-                getMoviesRecyclerView().scrollToPosition(0);
-                getSwipeRefreshLayout().setRefreshing(false);
-                this.screen = 2;
-                return true;
-            case R.id.menuitem_favorites:
-                getSwipeRefreshLayout().setRefreshing(true);
-                adapter.putMovies(mainViewModel.getMoviesFavoritesMutable().getValue());
-                getMoviesRecyclerView().scrollToPosition(0);
-                getSwipeRefreshLayout().setRefreshing(false);
-                this.screen = 3;
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        PopularMoviesApplication.getEventBus().register(this);
-        if (this.screen == 3) {
-            adapter.putMovies(mainViewModel.getMoviesFavoritesMutable().getValue());
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        try{
-            if (connectedService && pmService != null) {
-                unbindService(conn);
-            }
-            } catch (IllegalArgumentException iae) {
-                Log.e(TAG, iae.getMessage());
-        }
-        PopularMoviesApplication.getEventBus().register(this);
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
 
